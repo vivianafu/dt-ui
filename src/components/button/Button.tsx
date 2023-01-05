@@ -13,9 +13,9 @@ const variantStyles: { [K in Variants]: string } = {
   secondary:
     'border-transparent !text-gray-50 bg-_sky-400 hover:bg-_sky-500 focus:ring-offset-sky-700 focus:ring-sky-500',
   orange:
-    'border-transparent !text-gray-50 bg-_orange-400 hover:bg-_orange-550 focus:ring-offset-orange-800 focus:ring-_orange-450',
+    'border-transparent !text-gray-50 bg-_orange-400 hover:bg-_orange-500 focus:ring-offset-orange-800 focus:ring-_orange-450',
   green:
-    'border-transparent !text-gray-50 bg-_lime-500 hover:bg-_lime-550 focus:ring-offset-lime-700 focus:ring-_lime-450',
+    'border-transparent !text-gray-50 bg-_lime-400 hover:bg-_lime-500 focus:ring-offset-lime-700 focus:ring-_lime-450',
   cancel:
     'border-transparent bg-gray-700 !text-gray-50 hover:bg-gray-750 focus:ring-offset-gray-800 focus:ring-gray-750',
   danger:
@@ -39,7 +39,7 @@ type Props = {
   className?: string;
   size?: Sizes;
   variant?: Variants;
-  borderRadius: BorderRadius;
+  borderRadius?: BorderRadius;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
