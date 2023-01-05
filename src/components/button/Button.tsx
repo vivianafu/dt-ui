@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 
-import { Variants, Sizes, BorderRadius, BorderRadiusTypes } from './types';
+import { Variants, Sizes, BorderRadius } from './types';
 
-import type { VariantTypes, SizeTypes } from './types';
+import type { VariantTypes, SizeTypes, BorderRadiusTypes } from './types';
 
 const defaultStyle =
   'inline-flex items-center border shadow-sm text-gray-300 font-medium focus:ring-2 focus:ring-offset-2 focus:outline-none';
