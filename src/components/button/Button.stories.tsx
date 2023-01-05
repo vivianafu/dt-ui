@@ -1,5 +1,4 @@
 import Button from './Button';
-import { BorderRadius, Sizes } from './types';
 
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 

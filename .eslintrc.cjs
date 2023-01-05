@@ -74,6 +74,13 @@ module.exports = {
       node: {
         extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.json'],
       },
+      alias: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx', '.css', '.json'],
+        map: [
+          ['@', './src'],
+          ['tailwind-config', './tailwind.config.cjs'],
+        ],
+      },
     },
   },
 };

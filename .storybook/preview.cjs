@@ -1,5 +1,7 @@
 import '../src/index.css';
 
+import { colors } from '../src/styles';
+
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
@@ -13,7 +15,7 @@ export const parameters = {
     values: [
       {
         name: 'dt-background',
-        value: '#1B1D1F',
+        value: colors.primary['900'],
       },
       {
         name: 'light',

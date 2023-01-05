@@ -1,3 +1,5 @@
+const path = require('path');
+
 const svgrPlugin = require('vite-plugin-svgr');
 const tsconfigPaths = require('vite-tsconfig-paths');
 
@@ -15,6 +17,17 @@ module.exports = {
     return {
       ...config,
       plugins: config.plugins.concat(svgrPlugin(), tsconfigPaths.default()),
+      optimizeDeps: {
+        ...config.optimizeDeps,
+        include: ['tailwind-config'].concat(config.optimizeDeps?.include).filter(Boolean),
+      },
+      resolve: {
+        ...config.resolve,
+        alias: {
+          ...config.resolve?.alias,
+          'tailwind-config': path.resolve(__dirname, '../tailwind.config.cjs'),
+        },
+      },
     };
   },
 };
