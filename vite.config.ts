@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [react()],
   build: {
     commonjsOptions: {
-      include: ['./tailwind.config.js', 'node_modules/**'],
+      include: ['./tailwind.config.cjs', 'node_modules/**'],
     },
   },
   optimizeDeps: {
