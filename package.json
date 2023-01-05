@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "storybook": "dotenv -v NODE_OPTIONS=--openssl-legacy-provider -- start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "dotenv -v NODE_OPTIONS=--openssl-legacy-provider -- build-storybook",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx src",
     "prettier": "prettier --write \"./src/**/*.+(js|jsx|ts|tsx)\""
