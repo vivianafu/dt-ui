@@ -17,7 +17,7 @@ import {
 } from '@floating-ui/react';
 import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
-// import { mergeRefs } from 'react-merge-refs';
+import { useMergeRefs } from '@floating-ui/react';
 
 import { ReferenceType } from '@floating-ui/react';
 import type { Strategy, Placement } from '@floating-ui/react-dom';
@@ -89,15 +89,7 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const mergeRefs = (...refs: Array<any>) => {
-    return (node: any) => {
-      for (const ref of refs) {
-        if (ref) ref.current = node;
-      }
-    };
-  };
-
-  const ref = useMemo(() => children && mergeRefs(reference, (children as any).ref), [reference, children]);
+  const ref = useMemo(() => children && useMergeRefs([reference, (children as any).ref]), [reference, children]);
 
   return (
     <>
