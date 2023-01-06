@@ -16,7 +16,7 @@ module.exports = {
   async viteFinal(config) {
     return {
       ...config,
-      plugins: config.plugins.concat(svgrPlugin(), tsconfigPaths.default()),
+      plugins: config.plugins.concat(svgrPlugin()),
       optimizeDeps: {
         ...config.optimizeDeps,
         include: ['tailwind-config'].concat(config.optimizeDeps?.include).filter(Boolean),
