@@ -7,7 +7,7 @@ const defaultStyle =
 
 const variantStyles: { [K in Variants]: string } = {
   default:
-    'border-gray-300 bg-transparent hover:border-gray-100 hover:text-gray-100 focus:ring-offset-gray-800 focus:ring-gray-300',
+    'border-gray-300 bg-transparent hover:border-gray-100 hover:text-gray-100 focus:ring-offset-gray-800 focus:ring-gray-300 dark:bg-red-500',
   primary:
     'border-transparent !text-gray-50 bg-primary-500 hover:bg-primary-600 focus:ring-offset-primary-700 focus:ring-primary-500',
   secondary:
