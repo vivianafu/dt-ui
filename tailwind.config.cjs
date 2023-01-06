@@ -38,6 +38,7 @@ const baseSizes = {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/components/**/*.{js,jsx,ts,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -112,6 +113,20 @@ module.exports = {
       minHeight: { inherit: 'inherit', ...baseSizes },
       maxWidth: { inherit: 'inherit', ...baseSizes },
       maxHeight: { inherit: 'inherit', ...baseSizes },
+      zIndex: {
+        2: 2,
+        '-1': -1,
+        sider: 100,
+        dialog: 50,
+        spinner: 99,
+        overlay: 50,
+        tooltip: 100,
+        menu: 50,
+        options: 20,
+        sticky: 2,
+        stickyY: 3,
+        watermark: 9999,
+      },
     },
   },
   plugins: [],
