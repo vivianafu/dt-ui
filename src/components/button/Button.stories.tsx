@@ -4,7 +4,7 @@ import { BorderRadius, Sizes } from './types';
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
 export default {
-  title: 'Button',
+  title: 'Components/Button',
   component: Button,
   argTypes: {
     size: {
