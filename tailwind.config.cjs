@@ -38,6 +38,7 @@ const baseSizes = {
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/components/**/*.{js,jsx,ts,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -98,21 +99,34 @@ module.exports = {
         _orange: {
           ...colors.orange,
           400: '#F97316',
-          450: '#F97215',
-          500: '#EB6C14',
+          450: '#F27219',
+          500: '#ED7019',
         },
         _lime: {
-          300: '#F6FFED',
-          400: '#B7EB8F',
-          450: '#7FB43A',
-          500: '#75A634',
-          550: '#6C9930',
+          400: '#45d45e',
+          450: '#22C55E',
+          500: '#3bb950',
+          700: '#175622',
         },
       },
       minWidth: { inherit: 'inherit', ...baseSizes },
       minHeight: { inherit: 'inherit', ...baseSizes },
       maxWidth: { inherit: 'inherit', ...baseSizes },
       maxHeight: { inherit: 'inherit', ...baseSizes },
+      zIndex: {
+        2: 2,
+        '-1': -1,
+        sider: 100,
+        dialog: 50,
+        spinner: 99,
+        overlay: 50,
+        tooltip: 100,
+        menu: 50,
+        options: 20,
+        sticky: 2,
+        stickyY: 3,
+        watermark: 9999,
+      },
     },
   },
   plugins: [],

@@ -1,18 +1,17 @@
 import Button from './Button';
-import { BorderRadius, Sizes, Variants } from './types';
 
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
 export default {
-  title: 'Button',
+  title: 'Components/Button',
   component: Button,
   argTypes: {
     size: {
-      options: Object.values(Sizes),
+      options: ['large', 'medium', 'small'],
       control: { type: 'radio' },
     },
     borderRadius: {
-      options: Object.values(BorderRadius),
+      options: ['default', 'full', 'none'],
       control: { type: 'radio' },
     },
   },
@@ -22,35 +21,35 @@ const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  variant: Variants.DEFAULT,
+  variant: 'default',
 };
 
 export const Primary = Template.bind({});
 Primary.args = {
-  variant: Variants.PRIMARY,
+  variant: 'primary',
 };
 
 export const Secondary = Template.bind({});
 Secondary.args = {
-  variant: Variants.SECONDARY,
+  variant: 'secondary',
 };
 
 export const Orange = Template.bind({});
 Orange.args = {
-  variant: Variants.ORANGE,
+  variant: 'orange',
 };
 
 export const Green = Template.bind({});
 Green.args = {
-  variant: Variants.GREEN,
+  variant: 'green',
 };
 
 export const Cancel = Template.bind({});
 Cancel.args = {
-  variant: Variants.CANCEL,
+  variant: 'cancel',
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
-  variant: Variants.DANGER,
+  variant: 'danger',
 };
