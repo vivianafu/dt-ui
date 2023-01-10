@@ -38,7 +38,7 @@ type Props = {
   arrowClassName?: string;
   portalClassName?: string;
   strategy?: Strategy;
-  placement?: Placement | 'auto';
+  placement?: Placement;
   show?: boolean;
   interactive?: boolean;
 };
@@ -50,7 +50,7 @@ export default function Tooltip({
   arrowClassName = '',
   portalClassName = '',
   strategy = 'fixed',
-  placement = 'auto',
+  placement = 'bottom',
   show = true,
   interactive = false,
 }: Props) {
@@ -72,10 +72,10 @@ export default function Tooltip({
     middleware: [
       offset(8),
       shift({ padding: 8 }),
-      ...(placement === 'auto' ? [autoPlacement()] : []),
+      ...(placement ? [] : [autoPlacement()]),
       ...(arrowRef.current ? [arrow({ element: arrowRef.current })] : []),
     ],
-    ...(placement !== 'auto' && { placement }),
+    ...{ placement: placement },
     whileElementsMounted: autoUpdate,
   });
 
