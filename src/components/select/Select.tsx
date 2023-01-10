@@ -75,7 +75,7 @@ export default function Select({
               {...(ariaLabel && { 'aria-label': ariaLabel })}
               className={clsx(
                 'relative min-h-9 w-full cursor-pointer rounded-md border border-gray-50/20 bg-primary-900 py-1 pl-3 pr-10 text-left text-gray-50 shadow-sm focus:border-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-700 dark:bg-transparent dark:focus:border-transparent dark:focus:ring-cyan-500',
-                disabled ? '!bg-gray-800 text-gray-600' : '',
+                disabled ? 'pointer-events-none cursor-default !bg-opacity-50 text-gray-600' : '',
                 buttonClassName
               )}
             >
