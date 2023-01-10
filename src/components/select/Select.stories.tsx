@@ -7,6 +7,7 @@ import type { ComponentStory, ComponentMeta } from '@storybook/react';
 export default {
   title: 'Components/Select',
   component: Select,
+  parameters: { layout: 'centered' },
 } as ComponentMeta<typeof Select>;
 
 const Template: ComponentStory<typeof Select> = ({ selected, onChange, ...args }) => {
@@ -30,9 +31,17 @@ Disabled.args = {
   disabled: true,
 };
 
-export const Empty = Template.bind({});
-Empty.args = {
+export const EmptyOption = Template.bind({});
+EmptyOption.args = {
   label: '',
   className: 'min-w-48',
   options: [],
+};
+
+export const PlacementTop = Template.bind({});
+PlacementTop.args = {
+  label: 'Select',
+  className: 'min-w-48',
+  options: Array.from({ length: 2 }, (_, i) => ({ key: i.toString(), value: `Option ${i}` })),
+  placement: 'top',
 };

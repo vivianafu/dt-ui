@@ -53,7 +53,7 @@ export default function Select({
   const { x, y, reference, floating, strategy, placement } = useFloating({
     strategy: _strategy,
     ...{ placement: _placement },
-    middleware: [...(_placement ? [autoPlacement({ padding: 8, allowedPlacements: ['top', 'bottom'] })] : [])],
+    middleware: [...(_placement ? [] : [autoPlacement({ padding: 8, allowedPlacements: ['top', 'bottom'] })])],
     whileElementsMounted: autoUpdate,
   });
 
