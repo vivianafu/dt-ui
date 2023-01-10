@@ -89,7 +89,7 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = useMemo(() => children && useMergeRefs([reference, (children as any).ref]), [reference, children]);
+  const ref = children && useMergeRefs([reference, (children as any).ref]);
 
   return (
     <>
