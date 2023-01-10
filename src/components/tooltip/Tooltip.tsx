@@ -1,4 +1,4 @@
-import { cloneElement, Fragment, isValidElement, useMemo, useRef, useState } from 'react';
+import { cloneElement, Fragment, isValidElement, useRef, useState } from 'react';
 
 import {
   offset,
@@ -19,7 +19,6 @@ import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { useMergeRefs } from '@floating-ui/react';
 
-import { ReferenceType } from '@floating-ui/react';
 import type { Strategy, Placement } from '@floating-ui/react-dom';
 import type { ReactNode } from 'react';
 import { Side } from '@floating-ui/react/src';

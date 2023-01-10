@@ -9,10 +9,10 @@ import type { Placement } from '@floating-ui/react-dom';
 type Props = {
   label: string;
   className?: string;
-  placement?: Placement | 'auto';
+  placement?: Placement;
 };
 
-export default function Ellipsis({ label, className = '', placement = 'auto' }: Props) {
+export default function Ellipsis({ label, className = '', placement }: Props) {
   const ref = useRef<HTMLSpanElement | null>(null);
   const { width } = useWindowSize();
   const [isTruncated, setIsTruncated] = useState(false);

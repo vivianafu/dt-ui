@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState, useLayoutEffect } from 'react';
+import { Fragment } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement, Strategy, Placement } from '@floating-ui/react-dom';
 import { Listbox, Transition } from '@headlessui/react';
