@@ -4,7 +4,8 @@ import clsx from 'clsx';
 import { useWindowSize } from 'react-use';
 
 import Tooltip from '../tooltip/Tooltip';
-import type { Placement } from '@floating-ui/react-dom';
+
+import type { Placement } from '@floating-ui/react';
 
 type Props = {
   label: string;

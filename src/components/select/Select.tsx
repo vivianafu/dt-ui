@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 
-import { useFloating, autoUpdate, autoPlacement, Strategy, Placement } from '@floating-ui/react-dom';
+import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Listbox, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { CheckIcon } from '@heroicons/react/24/solid';
@@ -8,8 +8,9 @@ import clsx from 'clsx';
 import { useMeasure } from 'react-use';
 
 import { ReactComponent as CaretDownIcon } from '../../assets/icons/caret-down-solid.svg';
-
 import Ellipsis from '../ellipsis/Ellipsis';
+
+import type { Strategy, Placement } from '@floating-ui/react';
 
 type Option = {
   key: string;

@@ -14,14 +14,13 @@ import {
   useDismiss,
   FloatingPortal,
   safePolygon,
+  useMergeRefs,
 } from '@floating-ui/react';
 import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import { useMergeRefs } from '@floating-ui/react';
 
-import type { Strategy, Placement } from '@floating-ui/react-dom';
+import type { Strategy, Placement, Side } from '@floating-ui/react';
 import type { ReactNode } from 'react';
-import { Side } from '@floating-ui/react/src';
 
 const FLIP_SIDES: { [k in Side]: string } = {
   left: 'right',
@@ -88,7 +87,7 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = children && useMergeRefs([reference, (children as any).ref]);
+  const ref = useMergeRefs([reference, children && (children as any).ref]);
 
   return (
     <>
