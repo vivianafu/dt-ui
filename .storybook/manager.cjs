@@ -1,5 +1,7 @@
 import { addons } from '@storybook/addons';
 
 addons.setConfig({
-  showRoots: false,
+  sidebar: {
+    showRoots: false,
+  },
 });
