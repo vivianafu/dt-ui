@@ -11,7 +11,7 @@ type Props = {
   disabled?: boolean;
   defaultChecked?: boolean;
   className?: string;
-  variant: Variants;
+  variant?: Variants;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
 
