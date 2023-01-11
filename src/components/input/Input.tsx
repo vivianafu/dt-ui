@@ -40,6 +40,8 @@ type Props = {
   placeholder?: string;
   className?: string;
   disabled?: boolean;
+  readOnly?: boolean;
+  autoComplete?: string;
 } & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 
 const Input = forwardRef(
@@ -59,6 +61,8 @@ const Input = forwardRef(
       required = false,
       variant = 'default',
       inputSize = 'medium',
+      autoComplete = 'off',
+      readOnly = false,
       ...props
     }: Props,
     ref
@@ -111,6 +115,8 @@ const Input = forwardRef(
             className
           )}
           required={required}
+          autoComplete={autoComplete}
+          tabIndex={readOnly ? -1 : undefined}
           {...(isNil(props.value) && { defaultValue: isNil(defaultValue) ? '' : defaultValue })}
           {...props}
         />
