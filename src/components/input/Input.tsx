@@ -30,7 +30,7 @@ type Props = {
   variant?: Variants;
   inputSize?: Sizes;
   type?: HTMLInputTypeAttribute;
-  name: string;
+  name?: string;
   label?: string;
   splitter?: string;
   defaultValue?: string;
@@ -91,7 +91,8 @@ const Input = forwardRef(
             className={clsx(
               'mr-1 inline-flex whitespace-nowrap text-gray-50',
               inputSize === 'large' ? 'text-xl' : '',
-              inputSize === 'small' ? 'text-sm' : ''
+              inputSize === 'small' ? 'text-sm' : '',
+              disabled ? 'pointer-events-none' : ''
             )}
           >
             {label} {splitter}
@@ -111,7 +112,7 @@ const Input = forwardRef(
           className={clsx(
             variant ? variantStyles?.[variant] : '',
             inputSize ? sizeStyles?.[inputSize] : '',
-            disabled ? '!bg-opacity-50 text-gray-600' : '',
+            disabled ? 'pointer-events-none !bg-opacity-50 text-gray-600' : '',
             className
           )}
           required={required}
