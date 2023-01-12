@@ -24,10 +24,11 @@ type Props = {
 };
 
 const sizeStyles = {
-  small: 'max-w-[40%]',
-  medium: 'max-w-[80%]',
-  large: 'max-w-[90%]',
-  full: 'max-w-full h-screen',
+  default: '',
+  small: '!max-w-[40%]',
+  medium: '!max-w-[80%]',
+  large: 'w-screen',
+  full: '!max-w-full h-screen',
 };
 
 const variantStyles: { [K in Variants]: { title: string; body: string } } = {
@@ -58,10 +59,10 @@ export default function Modal({
   disabled = false,
   afterClose = () => {},
   variant = 'default',
-  size = 'medium',
+  size = 'default',
   verticalAlign = 'center',
 }: Props) {
-  const [isOpen, setIsOpen] = useState(open);
+  const [isOpen, setIsOpen] = useState<boolean>(open);
 
   return (
     <>
@@ -104,15 +105,10 @@ export default function Modal({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <div className={clsx('fixed inset-0 flex items-center justify-center p-4')}>
+            <div className={clsx('fixed inset-0 flex items-center justify-center', size === 'full' ? '' : 'p-4')}>
               <div className={clsx('flex min-h-full justify-center', alignStyles[verticalAlign], overlayClassName)}>
                 <Dialog.Panel
-                  className={clsx(
-                    'w-screen max-w-7xl rounded shadow',
-                    className,
-                    sizeStyles[size],
-                    variantStyles[variant].body
-                  )}
+                  className={clsx('max-w-7xl rounded shadow', sizeStyles[size], variantStyles[variant].body, className)}
                 >
                   {title && (
                     <div

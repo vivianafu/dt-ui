@@ -1,5 +1,3 @@
-import React, { useRef } from 'react';
-
 import Button from '../button/index';
 
 import Modal from './Modal';
@@ -12,12 +10,25 @@ export default {
   argTypes: {
     variant: {
       options: ['default', 'unstyled'],
+      defaultValue: 'default',
       control: { type: 'radio' },
+    },
+    verticalAlign: {
+      options: ['top', 'center'],
+      defaultValue: 'center',
+      control: { type: 'radio' },
+    },
+    size: {
+      options: ['default', 'small', 'medium', 'large', 'full'],
+      defaultValue: 'default',
+      control: { type: 'select' },
     },
   },
 } as ComponentMeta<typeof Modal>;
 
-const Content = ({ close }: any) => {
+const Content = ({ close, open }: { close: () => void; open: boolean }) => {
+  console.log(open ? 'The Modal is opened' : 'The Modal is closed');
+
   return (
     <div className="flex h-[calc(100%_-_3rem)] flex-col space-y-8 p-4">
       <div className="grow">
@@ -40,7 +51,7 @@ const Content = ({ close }: any) => {
 
 const Template: ComponentStory<typeof Modal> = ({ ...args }) => {
   return (
-    <Modal {...args} render={({ close, open }) => <Content close={close} />}>
+    <Modal {...args} render={({ close, open }) => <Content close={close} open={open} />}>
       <Button variant="primary">Trigger</Button>
     </Modal>
   );
@@ -49,6 +60,8 @@ const Template: ComponentStory<typeof Modal> = ({ ...args }) => {
 export const Default = Template.bind({});
 Default.args = {
   title: 'Modal Title',
+  disableClose: true,
+  size: 'default',
 };
 
 export const Small = Template.bind({});
@@ -56,6 +69,12 @@ Small.args = {
   title: 'Modal Title',
   className: '',
   size: 'small',
+};
+
+export const Medium = Template.bind({});
+Medium.args = {
+  title: 'Modal Title',
+  size: 'medium',
 };
 
 export const Large = Template.bind({});
