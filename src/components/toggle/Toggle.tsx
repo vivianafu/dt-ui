@@ -64,8 +64,6 @@ const Toggle = ({
     if (typeof checked === 'boolean') setEnabled(checked);
   }, [checked]);
 
-  console.log('enabled', enabled);
-
   return (
     <div className="flex items-center">
       <Switch
@@ -74,7 +72,7 @@ const Toggle = ({
         className={clsx(
           'relative inline-flex shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-primary-900',
           sizeStyles[size].background,
-          disabled ? 'cursor-not-allowed !bg-opacity-50' : '',
+          disabled ? 'pointer-events-none !bg-opacity-40' : '',
           className,
           enabled ? 'bg-primary-600 dark:bg-cyan-500' : '!bg-gray-200'
         )}
@@ -83,9 +81,10 @@ const Toggle = ({
       >
         <span
           className={clsx(
+            'pointer-events-none inline-block rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
             sizeStyles[size].circle,
             enabled ? translateXConfig[size] : 'translate-x-0',
-            'pointer-events-none inline-block  rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out'
+            disabled ? 'bg-opacity-50' : ''
           )}
         />
       </Switch>
