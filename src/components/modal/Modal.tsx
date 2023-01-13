@@ -16,7 +16,7 @@ type Props = {
   open?: boolean;
   disableClose?: boolean;
   disabled?: boolean;
-  render: (props: { open: boolean; close: () => void }) => React.ReactNode;
+  render: React.ReactNode | ((props: { open: boolean; close: () => void }) => React.ReactNode);
   afterClose?: () => void;
   variant?: Variants;
   size?: Sizes;
@@ -134,13 +134,17 @@ export default function Modal({
                       </button>
                     </div>
                   )}
-                  {render({
-                    open: isOpen,
-                    close: () => {
-                      setIsOpen(false);
-                      afterClose();
-                    },
-                  })}
+                  {typeof render === 'function' ? (
+                    render({
+                      open: isOpen,
+                      close: () => {
+                        setIsOpen(false);
+                        afterClose();
+                      },
+                    })
+                  ) : (
+                    <div className={clsx(size === 'full' ? 'w-screen' : '')}>{render}</div>
+                  )}
                 </Dialog.Panel>
               </div>
             </div>
