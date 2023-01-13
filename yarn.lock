@@ -11265,6 +11265,11 @@ vfile@^4.0.0:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
+vite-plugin-css-injected-by-js@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-css-injected-by-js/-/vite-plugin-css-injected-by-js-2.3.1.tgz#f4982ddff6d718f89b63f0d1ced279f1e3b5f593"
+  integrity sha512-IPd5YJWFtQWO99F/C3qhyBqJnzkbeltn0Lefj0eit8whc9XFjRjL8EA+nVITDb7NBoM0reRqXvNmxWss3BzQgQ==
+
 vite-plugin-dts@^1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-1.7.1.tgz#7090237333a023a78bbcf7ce8e042531422f233a"
