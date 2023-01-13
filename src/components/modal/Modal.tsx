@@ -77,7 +77,7 @@ export default function Modal({
           setIsOpen(true);
         }}
       >
-        {typeof children === 'function' ? children({ open, close: () => setIsOpen(false) }) : children}
+        {typeof children === 'function' ? children({ open: isOpen, close: () => setIsOpen(false) }) : children}
       </div>
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
