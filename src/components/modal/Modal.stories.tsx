@@ -23,6 +23,10 @@ export default {
       defaultValue: 'default',
       control: { type: 'select' },
     },
+    open: {
+      defaultValue: true,
+      control: { type: 'boolean' },
+    },
   },
 } as ComponentMeta<typeof Modal>;
 

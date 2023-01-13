@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useLayoutEffect, useState } from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -63,6 +63,10 @@ export default function Modal({
   verticalAlign = 'center',
 }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(open);
+
+  useLayoutEffect(() => {
+    setIsOpen(open);
+  }, [open]);
 
   return (
     <>
