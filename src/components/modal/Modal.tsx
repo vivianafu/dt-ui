@@ -13,7 +13,7 @@ type Props = {
   titleClassName?: string;
   overlayClassName?: string;
   contentClassName?: string;
-  open?: boolean;
+  defaultOpen?: boolean;
   disableClose?: boolean;
   disabled?: boolean;
   render: React.ReactNode | ((props: { open: boolean; close: () => void }) => React.ReactNode);
@@ -54,7 +54,7 @@ export default function Modal({
   titleClassName,
   overlayClassName,
   render,
-  open = false,
+  defaultOpen = false,
   disableClose = false,
   disabled = false,
   afterClose = () => {},
@@ -62,11 +62,7 @@ export default function Modal({
   size = 'default',
   verticalAlign = 'center',
 }: Props) {
-  const [isOpen, setIsOpen] = useState<boolean>(open);
-
-  useLayoutEffect(() => {
-    setIsOpen(open);
-  }, [open]);
+  const [isOpen, setIsOpen] = useState<boolean>(defaultOpen);
 
   return (
     <>

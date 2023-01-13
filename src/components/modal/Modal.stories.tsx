@@ -1,4 +1,4 @@
-import Button from '../button/index';
+import Button from '../button';
 
 import Modal from './Modal';
 
@@ -23,7 +23,7 @@ export default {
       defaultValue: 'default',
       control: { type: 'select' },
     },
-    open: {
+    defaultOpen: {
       defaultValue: true,
       control: { type: 'boolean' },
     },
