@@ -30,7 +30,10 @@ const FLIP_SIDES: { [k in Side]: string } = {
 };
 
 type Props = {
-  children?: ReactNode;
+  /* use `ReactNode & { ref?: React.RefObject<unknown> }` to allow children to have ref
+     use <unknown> instead of <any> to get better type checking
+  */
+  children?: ReactNode & { ref?: React.RefObject<unknown> };
   label?: ReactNode | string | ((props: { open: boolean }) => React.ReactNode);
   className?: string;
   arrowClassName?: string;
@@ -40,6 +43,9 @@ type Props = {
   show?: boolean;
   interactive?: boolean;
   hasArrow?: boolean;
+
+  // for demo
+  mergeChildrenRef?: boolean;
 };
 
 export default function Tooltip({
@@ -53,6 +59,9 @@ export default function Tooltip({
   show = true,
   interactive = false,
   hasArrow = true,
+
+  // merge children ref with reference ref or not
+  mergeChildrenRef = true,
 }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const arrowRef = useRef<HTMLDivElement>(null);
@@ -90,7 +99,12 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = useMergeRefs([reference, children && (children as any).ref]); //TODO children type?
+  const ref = useMergeRefs([
+    reference,
+
+    // has children and children has ref then merge with reference ref
+    ...(mergeChildrenRef && children?.ref ? [children.ref] : []),
+  ]);
 
   return (
     <>
