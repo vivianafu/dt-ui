@@ -33,7 +33,7 @@ export default defineConfig(async ({ command, mode }) => {
           name: 'DT-UI',
           entry: path.resolve(__dirname, 'src/index.ts'),
           formats: ['es', 'umd'],
-          fileName: (format) => `dt-ui.${format}.js`,
+          fileName: (format) => `vi-dt-ui.${format}.js`,
         },
         rollupOptions: {
           external: Object.keys(pkg.dependencies),
