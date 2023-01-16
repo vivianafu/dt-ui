@@ -14,11 +14,15 @@ const Label = ({ open }: { open: boolean }) => {
   return <div>label</div>;
 };
 
-const Template: ComponentStory<typeof Tooltip> = (args) => (
-  <Tooltip {...args}>
-    <span className="text-gray-50">Trigger</span>
-  </Tooltip>
-);
+const Template: ComponentStory<typeof Tooltip> = (args) => {
+  return (
+    <Tooltip {...args}>
+      <button className="rounded py-1 px-2 text-gray-50 focus:border-2 focus:border-gray-400 focus:outline-none">
+        Trigger
+      </button>
+    </Tooltip>
+  );
+};
 
 export const Default = Template.bind({});
 Default.args = {

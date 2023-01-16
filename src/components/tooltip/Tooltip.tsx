@@ -20,7 +20,7 @@ import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
 import type { Strategy, Placement, Side } from '@floating-ui/react';
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 const FLIP_SIDES: { [k in Side]: string } = {
   left: 'right',
@@ -30,7 +30,7 @@ const FLIP_SIDES: { [k in Side]: string } = {
 };
 
 type Props = {
-  children?: ReactNode;
+  children?: ReactNode & { ref?: RefObject<unknown> };
   label?: ReactNode | string | ((props: { open: boolean }) => React.ReactNode);
   className?: string;
   arrowClassName?: string;
@@ -90,7 +90,7 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = useMergeRefs([reference, children && (children as any).ref]); //TODO children type?
+  const ref = useMergeRefs([reference, ...(children?.ref ? [children.ref] : [])]);
 
   return (
     <>
