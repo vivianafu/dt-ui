@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsup",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "dotenv -v NODE_OPTIONS=--openssl-legacy-provider -- build-storybook",
@@ -49,6 +49,7 @@
     "prettier": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.1",
     "tailwindcss": "^3.2.4",
+    "tsup": "^6.5.0",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
     "vite-plugin-css-injected-by-js": "^2.3.1",
@@ -66,6 +67,7 @@
     ".": {
       "import": "./dist/vi-dt-ui.es.js",
       "require": "./dist/vi-dt-ui.umd.js"
-    }
+    },
+    "./dist/index.css": "./dist/index.css"
   }
 }
