@@ -1,38 +1,37 @@
-import { Fragment } from 'react';
+import { Fragment } from 'react'
 
-import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
-import { Listbox, Transition } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { CheckIcon } from '@heroicons/react/24/solid';
-import clsx from 'clsx';
-import { useMeasure } from 'react-use';
+import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react'
+import { Listbox, Transition } from '@headlessui/react'
+import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { CheckIcon } from '@heroicons/react/24/solid'
+import clsx from 'clsx'
+import { useMeasure } from 'react-use'
 
-import { ReactComponent as CaretDownIcon } from '../../assets/icons/caret-down-solid.svg';
-import Ellipsis from '../ellipsis/Ellipsis';
+import Ellipsis from '../ellipsis/Ellipsis'
 
-import type { Strategy, Placement } from '@floating-ui/react';
+import type { Strategy, Placement } from '@floating-ui/react'
 
 type Option = {
-  key: string;
-  value: string;
-  disabled?: boolean;
-};
+  key: string
+  value: string
+  disabled?: boolean
+}
 
 type Props = {
-  className?: string;
-  buttonClassName?: string;
-  optionClassName?: string;
-  label?: string;
-  options?: Array<Option>;
-  selected?: Option;
-  placeholder?: string;
-  splitter?: string;
-  ariaLabel?: string;
-  strategy?: Strategy;
-  placement?: Placement;
-  onChange?: any;
-  disabled?: boolean;
-};
+  className?: string
+  buttonClassName?: string
+  optionClassName?: string
+  label?: string
+  options?: Array<Option>
+  selected?: Option
+  placeholder?: string
+  splitter?: string
+  ariaLabel?: string
+  strategy?: Strategy
+  placement?: Placement
+  onChange?: any
+  disabled?: boolean
+}
 
 export default function Select({
   className,
@@ -49,14 +48,14 @@ export default function Select({
   onChange = (): void => {},
   disabled = false,
 }: Props) {
-  const [ref, { width }] = useMeasure<HTMLDivElement>();
+  const [ref, { width }] = useMeasure<HTMLDivElement>()
 
   const { x, y, reference, floating, strategy, placement } = useFloating({
     strategy: _strategy,
     ...{ placement: _placement },
     middleware: [...(_placement ? [] : [autoPlacement({ padding: 8, allowedPlacements: ['top', 'bottom'] })])],
     whileElementsMounted: autoUpdate,
-  });
+  })
 
   return (
     <Listbox value={selected} onChange={onChange} as="div" className="inline-flex" disabled={disabled}>
@@ -77,7 +76,7 @@ export default function Select({
               className={clsx(
                 'relative min-h-9 w-full cursor-pointer rounded-md border border-gray-50/20 bg-primary-900 py-1 pl-3 pr-10 text-left text-gray-50 shadow-sm focus:border-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-700 dark:bg-transparent dark:focus:border-transparent dark:focus:ring-cyan-500',
                 disabled ? 'pointer-events-none cursor-default !bg-opacity-50 text-gray-600' : '',
-                buttonClassName
+                buttonClassName,
               )}
             >
               <span className={clsx('block truncate', options.length === 0 && 'opacity-50')}>
@@ -86,10 +85,10 @@ export default function Select({
               <span
                 className={clsx(
                   'pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2',
-                  disabled ? 'opacity-40' : ''
+                  disabled ? 'opacity-40' : '',
                 )}
               >
-                <CaretDownIcon className="h-4 w-4 fill-gray-100 dark:hidden dark:fill-gray-300" aria-hidden="true" />
+                <ChevronDownIcon className="h-4 w-4 fill-gray-100 dark:hidden dark:fill-gray-300" aria-hidden="true" />
                 <ChevronDownIcon className="hidden h-5 w-5 text-gray-300 dark:block" aria-hidden="true" />
               </span>
             </Listbox.Button>
@@ -114,7 +113,7 @@ export default function Select({
                   className={clsx(
                     'absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-50/20  bg-primary-900 py-1 text-sm shadow-lg focus:outline-none dark:bg-gray-900',
                     placement === 'top' && 'translate-y-[calc((100%_+_0.5rem)*-1)]',
-                    optionClassName
+                    optionClassName,
                   )}
                 >
                   {options.map((option) => (
@@ -125,7 +124,7 @@ export default function Select({
                       className={({ active }) =>
                         clsx(
                           active ? 'bg-primary-700 text-green-50 dark:bg-cyan-500' : 'text-gray-50',
-                          'relative cursor-default select-none py-2 pl-3 pr-9'
+                          'relative cursor-default select-none py-2 pl-3 pr-9',
                         )
                       }
                       value={option}
@@ -140,7 +139,7 @@ export default function Select({
                             <span
                               className={clsx(
                                 active ? 'text-gray-50' : 'text-primary-400 dark:text-cyan-400',
-                                'absolute inset-y-0 right-0 flex items-center pr-2'
+                                'absolute inset-y-0 right-0 flex items-center pr-2',
                               )}
                             >
                               <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -166,5 +165,5 @@ export default function Select({
         </>
       )}
     </Listbox>
-  );
+  )
 }
