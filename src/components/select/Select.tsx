@@ -96,7 +96,7 @@ export default function Select({
                   disabled ? 'opacity-40' : '',
                 )}
               >
-                <ChevronDownIcon className="h-4 w-4 fill-gray-100 dark:hidden dark:fill-gray-300" aria-hidden="true" />
+                <ChevronDownIcon className="h-4 w-4 dark:hidden dark:fill-gray-300" aria-hidden="true" />
                 <ChevronDownIcon className="hidden h-5 w-5 text-gray-300 dark:block" aria-hidden="true" />
               </span>
             </Listbox.Button>
