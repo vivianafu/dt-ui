@@ -1,7 +1,7 @@
 {
   "name": "vi-dt-ui",
   "license": "UNLICENSED",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -67,7 +67,6 @@
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    },
-    "./dist/index.css": "./dist/index.css"
+    }
   }
 }
