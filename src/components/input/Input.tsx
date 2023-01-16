@@ -1,9 +1,9 @@
-import React, { useId, forwardRef, useState } from 'react';
+import React, { useId, forwardRef, useState } from 'react'
 
-import clsx from 'clsx';
-import { isNil } from 'lodash';
+import clsx from 'clsx'
+import { isNil } from 'lodash'
 
-import type { Variants, Sizes } from './types';
+import type { Variants, Sizes } from './types'
 import type {
   ChangeEventHandler,
   DetailedHTMLProps,
@@ -12,37 +12,37 @@ import type {
   InputHTMLAttributes,
   CompositionEventHandler,
   ChangeEvent,
-} from 'react';
+} from 'react'
 
 const variantStyles: { [K in Variants]: string } = {
   default:
     'rounded border border-gray-500/50 bg-transparent py-1 px-2 text-left text-gray-50 shadow-sm outline-none hover:border-primary-500 focus:border-transparent focus:border-primary-500 focus:ring-2 focus:ring-primary-500 dark:hover:border-cyan-600 dark:hover:ring-cyan-600 dark:focus:border-cyan-600',
   unstyled: '',
-};
+}
 
 const sizeStyles: { [K in Sizes]: string } = {
   small: 'px-1 py-0.5 text-sm',
   medium: 'px-2 py-1 text-base',
   large: 'px-4 py-2 text-xl',
-};
+}
 
 type Props = {
-  variant?: Variants;
-  inputSize?: Sizes;
-  type?: HTMLInputTypeAttribute;
-  name?: string;
-  label?: string;
-  splitter?: string;
-  defaultValue?: string;
-  onChange?: ChangeEventHandler<HTMLInputElement>;
-  onComposition?: CompositionEventHandler<HTMLInputElement>;
-  onBlur?: FocusEventHandler<HTMLInputElement>;
-  placeholder?: string;
-  className?: string;
-  disabled?: boolean;
-  readOnly?: boolean;
-  autoComplete?: string;
-} & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+  variant?: Variants
+  inputSize?: Sizes
+  type?: HTMLInputTypeAttribute
+  name?: string
+  label?: string
+  splitter?: string
+  defaultValue?: string
+  onChange?: ChangeEventHandler<HTMLInputElement>
+  onComposition?: CompositionEventHandler<HTMLInputElement>
+  onBlur?: FocusEventHandler<HTMLInputElement>
+  placeholder?: string
+  className?: string
+  disabled?: boolean
+  readOnly?: boolean
+  autoComplete?: string
+} & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 const Input = forwardRef(
   (
@@ -65,26 +65,26 @@ const Input = forwardRef(
       readOnly = false,
       ...props
     }: Props,
-    ref
+    ref,
   ) => {
-    const [isOnComposition, setIsOnComposition] = useState<boolean>(false);
-    const id = useId();
+    const [isOnComposition, setIsOnComposition] = useState<boolean>(false)
+    const id = useId()
 
     const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target instanceof HTMLInputElement && !isOnComposition) {
-        if (onChange) onChange(event);
+        if (onChange) onChange(event)
       }
-    };
+    }
 
     const handleComposition = (event: React.CompositionEvent<HTMLInputElement>) => {
       if (event.type === 'compositionend') {
-        if (onComposition && event.data) onComposition(event);
-        setIsOnComposition(false);
-      } else setIsOnComposition(true);
-    };
+        if (onComposition && event.data) onComposition(event)
+        setIsOnComposition(false)
+      } else setIsOnComposition(true)
+    }
 
     return (
-      <>
+      <div className="inline-flex items-center">
         {label && (
           <label
             htmlFor={id}
@@ -92,7 +92,7 @@ const Input = forwardRef(
               'mr-1 inline-flex whitespace-nowrap text-gray-50',
               inputSize === 'large' ? 'text-xl' : '',
               inputSize === 'small' ? 'text-sm' : '',
-              disabled ? 'pointer-events-none' : ''
+              disabled ? 'pointer-events-none' : '',
             )}
           >
             {label} {splitter}
@@ -113,7 +113,7 @@ const Input = forwardRef(
             variant ? variantStyles?.[variant] : '',
             inputSize ? sizeStyles?.[inputSize] : '',
             disabled ? 'pointer-events-none !bg-opacity-50 text-gray-600' : '',
-            className
+            className,
           )}
           required={required}
           autoComplete={autoComplete}
@@ -121,9 +121,9 @@ const Input = forwardRef(
           {...(isNil(props.value) && { defaultValue: isNil(defaultValue) ? '' : defaultValue })}
           {...props}
         />
-      </>
-    );
-  }
-);
+      </div>
+    )
+  },
+)
 
-export default Input;
+export default Input
