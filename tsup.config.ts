@@ -26,6 +26,7 @@ export default defineConfig({
   // make sure treeshake works
   treeshake: true,
   outDir: 'dist',
+  injectStyle: true,
 
   // onSuccess callback
   async onSuccess() {
