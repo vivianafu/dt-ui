@@ -20,7 +20,7 @@ import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
 import type { Strategy, Placement, Side } from '@floating-ui/react';
-import type { ReactNode } from 'react';
+import type { ReactNode, RefObject } from 'react';
 
 const FLIP_SIDES: { [k in Side]: string } = {
   left: 'right',
@@ -30,8 +30,8 @@ const FLIP_SIDES: { [k in Side]: string } = {
 };
 
 type Props = {
-  children?: ReactNode;
-  label?: ReactNode | string;
+  children?: ReactNode & { ref?: RefObject<unknown> };
+  label?: ReactNode | string | ((props: { open: boolean }) => React.ReactNode);
   className?: string;
   arrowClassName?: string;
   portalClassName?: string;
@@ -39,6 +39,7 @@ type Props = {
   placement?: Placement;
   show?: boolean;
   interactive?: boolean;
+  hasArrow?: boolean;
 };
 
 export default function Tooltip({
@@ -51,9 +52,11 @@ export default function Tooltip({
   placement = 'bottom',
   show = true,
   interactive = false,
+  hasArrow = true,
 }: Props) {
-  const [open, setOpen] = useState(false);
-  const arrowRef = useRef(null);
+  const [open, setOpen] = useState<boolean>(false);
+  const arrowRef = useRef<HTMLDivElement>(null);
+
   const {
     x,
     y,
@@ -87,7 +90,7 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = useMergeRefs([reference, children && (children as any).ref]);
+  const ref = useMergeRefs([reference, ...(children?.ref ? [children.ref] : [])]);
 
   return (
     <>
@@ -114,19 +117,30 @@ export default function Tooltip({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className={clsx('whitespace-nowrap rounded bg-gray-800 py-1 px-2 text-base shadow', className)}>
-                {label}
+              <div>
                 <div
-                  className={clsx('absolute -z-1 h-3 w-3 rotate-45 bg-gray-800', arrowClassName)}
-                  ref={arrowRef}
-                  style={{
-                    top: middlewareData?.arrow?.y ? middlewareData?.arrow?.y + middlewareData?.arrow?.centerOffset : '',
-                    left: middlewareData?.arrow?.x
-                      ? middlewareData?.arrow?.x + middlewareData?.arrow?.centerOffset
-                      : '',
-                    [FLIP_SIDES[_placement.split('-')[0] as Side]]: '-0.375rem',
-                  }}
-                />
+                  className={clsx(
+                    'relative rounded bg-gray-800 py-1 px-2 text-base shadow marker:whitespace-nowrap',
+                    className
+                  )}
+                >
+                  {typeof label === 'function' ? label({ open: open }) : label}
+                </div>
+                {hasArrow && (
+                  <div
+                    className={clsx('absolute -z-1 h-3 w-3 rotate-45 bg-gray-800', arrowClassName)}
+                    ref={arrowRef}
+                    style={{
+                      top: middlewareData?.arrow?.y
+                        ? middlewareData?.arrow?.y + middlewareData?.arrow?.centerOffset
+                        : '',
+                      left: middlewareData?.arrow?.x
+                        ? middlewareData?.arrow?.x + middlewareData?.arrow?.centerOffset
+                        : '',
+                      [FLIP_SIDES[_placement.split('-')[0] as Side]]: '-0.375rem',
+                    }}
+                  />
+                )}
               </div>
             </Transition.Child>
           </div>
