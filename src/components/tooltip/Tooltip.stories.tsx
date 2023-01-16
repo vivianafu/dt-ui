@@ -27,22 +27,17 @@ const Template: ComponentStory<typeof Tooltip> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   label: 'label',
-  className: 'text-gray-50',
-  arrowClassName: '',
 };
 
 export const PlacementTop = Template.bind({});
 PlacementTop.args = {
   label: ({ open }) => <Label open={open} />,
-  className: 'text-gray-50',
-  arrowClassName: '',
   placement: 'top',
 };
 
 export const HideArrow = Template.bind({});
 HideArrow.args = {
   label: <div>arrow hidden label</div>,
-  className: 'text-gray-50',
   hasArrow: false,
   placement: 'bottom-start',
 };

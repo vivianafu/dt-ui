@@ -30,7 +30,7 @@ const FLIP_SIDES: { [k in Side]: string } = {
 };
 
 type Props = {
-  children?: ReactNode & { ref?: RefObject<unknown> };
+  children?: (ReactNode & { ref?: RefObject<unknown> }) | string;
   label?: ReactNode | string | ((props: { open: boolean }) => React.ReactNode);
   className?: string;
   containerClassName?: string;
@@ -92,11 +92,14 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = useMergeRefs([reference, ...(children?.ref ? [children.ref] : [])]);
+  const ref = useMergeRefs([reference, ...(isValidElement(children) && children?.ref ? [children.ref] : [])]);
 
   return (
     <div className={containerClassName}>
       {isValidElement(children) && cloneElement(children, getReferenceProps({ ref, ...children.props }))}
+      {!isValidElement(children) && typeof children === 'string'
+        ? cloneElement(<div className=" text-gray-50">{children}</div>, getReferenceProps({ ref }))
+        : null}
       <FloatingPortal>
         <Transition appear show={show && open && !!label}>
           <div
