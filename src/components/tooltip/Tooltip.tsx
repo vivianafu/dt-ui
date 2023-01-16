@@ -33,6 +33,7 @@ type Props = {
   children?: ReactNode & { ref?: RefObject<unknown> };
   label?: ReactNode | string | ((props: { open: boolean }) => React.ReactNode);
   className?: string;
+  containerClassName?: string;
   arrowClassName?: string;
   portalClassName?: string;
   strategy?: Strategy;
@@ -46,6 +47,7 @@ export default function Tooltip({
   children,
   label,
   className = '',
+  containerClassName = '',
   arrowClassName = '',
   portalClassName = '',
   strategy = 'fixed',
@@ -93,7 +95,7 @@ export default function Tooltip({
   const ref = useMergeRefs([reference, ...(children?.ref ? [children.ref] : [])]);
 
   return (
-    <>
+    <div className={containerClassName}>
       {isValidElement(children) && cloneElement(children, getReferenceProps({ ref, ...children.props }))}
       <FloatingPortal>
         <Transition appear show={show && open && !!label}>
@@ -121,7 +123,7 @@ export default function Tooltip({
                 <div
                   className={clsx(
                     'relative rounded bg-gray-800 py-1 px-2 text-base shadow marker:whitespace-nowrap',
-                    className
+                    className,
                   )}
                 >
                   {typeof label === 'function' ? label({ open: open }) : label}
@@ -146,6 +148,6 @@ export default function Tooltip({
           </div>
         </Transition>
       </FloatingPortal>
-    </>
+    </div>
   );
 }

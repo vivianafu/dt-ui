@@ -1,27 +1,27 @@
-import { useId, forwardRef } from 'react'
+import { useId, forwardRef } from 'react';
 
-import clsx from 'clsx'
+import clsx from 'clsx';
 
-import type { Variants } from './types'
-import type { ChangeEventHandler } from 'react'
+import type { Variants } from './types';
+import type { ChangeEventHandler } from 'react';
 
 type Props = {
-  label?: string
-  splitter?: string
-  disabled?: boolean
-  defaultChecked?: boolean
-  className?: string
-  inputClassName?: string
-  labelClassName?: string
-  variant?: Variants
-  onChange?: ChangeEventHandler<HTMLInputElement>
-}
+  label?: string;
+  splitter?: string;
+  disabled?: boolean;
+  defaultChecked?: boolean;
+  className?: string;
+  containerClassName?: string;
+  labelClassName?: string;
+  variant?: Variants;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
+};
 
 const variantStyles: { [K in Variants]: string } = {
   default:
     'rounded border-gray-50 bg-transparent text-primary-500 focus:ring-primary-600 focus:ring-offset-primary-900 dark:text-cyan-500 dark:focus:ring-cyan-600 dark:focus:ring-offset-cyan-900',
   unstyled: '',
-}
+};
 
 const Checkbox = forwardRef(
   (
@@ -32,15 +32,15 @@ const Checkbox = forwardRef(
       label = '',
       variant = 'default',
       className = '',
-      inputClassName = '',
+      containerClassName = '',
       labelClassName = '',
     }: Props,
     ref,
   ) => {
-    const id = useId()
+    const id = useId();
 
     return (
-      <div className={clsx(label ? 'inline-flex items-center' : '', className)}>
+      <div className={clsx(label ? 'inline-flex items-center' : '', containerClassName)}>
         <input
           ref={() => ref && (ref as React.MutableRefObject<unknown>).current}
           type="checkbox"
@@ -48,7 +48,7 @@ const Checkbox = forwardRef(
           className={clsx(
             variant ? variantStyles[variant] : '',
             disabled ? 'pointer-events-none !border-opacity-50 text-gray-600' : '',
-            inputClassName,
+            className,
           )}
           disabled={disabled}
           defaultChecked={defaultChecked}
@@ -60,8 +60,8 @@ const Checkbox = forwardRef(
           </label>
         )}
       </div>
-    )
+    );
   },
-)
+);
 
-export default Checkbox
+export default Checkbox;

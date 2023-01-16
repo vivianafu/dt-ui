@@ -1,42 +1,44 @@
-import { Fragment } from 'react'
+import { Fragment } from 'react';
 
-import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react'
-import { Listbox, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/24/outline'
-import { CheckIcon } from '@heroicons/react/24/solid'
-import clsx from 'clsx'
-import { useMeasure } from 'react-use'
+import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
+import { Listbox, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { CheckIcon } from '@heroicons/react/24/solid';
+import clsx from 'clsx';
+import { useMeasure } from 'react-use';
 
-import Ellipsis from '../ellipsis/Ellipsis'
+import Ellipsis from '../ellipsis/Ellipsis';
 
-import type { Strategy, Placement } from '@floating-ui/react'
+import type { Strategy, Placement } from '@floating-ui/react';
 
 type Option = {
-  key: string
-  value: string
-  disabled?: boolean
-}
+  key: string;
+  value: string;
+  disabled?: boolean;
+};
 
 type Props = {
-  className?: string
-  buttonClassName?: string
-  optionClassName?: string
-  label?: string
-  options?: Array<Option>
-  selected?: Option
-  placeholder?: string
-  splitter?: string
-  ariaLabel?: string
-  strategy?: Strategy
-  placement?: Placement
-  onChange?: any
-  disabled?: boolean
-}
+  className?: string;
+  containerClassName?: string;
+  buttonClassName?: string;
+  optionClassName?: string;
+  label?: string;
+  options?: Array<Option>;
+  selected?: Option;
+  placeholder?: string;
+  splitter?: string;
+  ariaLabel?: string;
+  strategy?: Strategy;
+  placement?: Placement;
+  onChange?: any;
+  disabled?: boolean;
+};
 
 export default function Select({
-  className,
-  buttonClassName,
-  optionClassName,
+  className = '',
+  containerClassName = '',
+  buttonClassName = '',
+  optionClassName = '',
   label,
   options = [],
   selected = options[0] || {},
@@ -48,17 +50,23 @@ export default function Select({
   onChange = (): void => {},
   disabled = false,
 }: Props) {
-  const [ref, { width }] = useMeasure<HTMLDivElement>()
+  const [ref, { width }] = useMeasure<HTMLDivElement>();
 
   const { x, y, reference, floating, strategy, placement } = useFloating({
     strategy: _strategy,
     ...{ placement: _placement },
     middleware: [...(_placement ? [] : [autoPlacement({ padding: 8, allowedPlacements: ['top', 'bottom'] })])],
     whileElementsMounted: autoUpdate,
-  })
+  });
 
   return (
-    <Listbox value={selected} onChange={onChange} as="div" className="inline-flex" disabled={disabled}>
+    <Listbox
+      value={selected}
+      onChange={onChange}
+      as="div"
+      className={clsx('inline-flex', containerClassName)}
+      disabled={disabled}
+    >
       {({ open }) => (
         <>
           {label && (
@@ -165,5 +173,5 @@ export default function Select({
         </>
       )}
     </Listbox>
-  )
+  );
 }

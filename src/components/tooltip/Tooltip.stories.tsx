@@ -17,9 +17,9 @@ const Label = ({ open }: { open: boolean }) => {
 const Template: ComponentStory<typeof Tooltip> = (args) => {
   return (
     <Tooltip {...args}>
-      <button className="rounded py-1 px-2 text-gray-50 focus:border-2 focus:border-gray-400 focus:outline-none">
+      <div className="rounded py-1 px-2 text-gray-50 focus:border-2 focus:border-gray-400 focus:outline-none">
         Trigger
-      </button>
+      </div>
     </Tooltip>
   );
 };
