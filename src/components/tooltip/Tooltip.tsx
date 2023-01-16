@@ -122,7 +122,7 @@ export default function Tooltip({
               <div>
                 <div
                   className={clsx(
-                    'relative rounded bg-gray-800 py-1 px-2 text-base shadow marker:whitespace-nowrap',
+                    'relative rounded bg-gray-800 py-1 px-2 text-base text-gray-50 shadow marker:whitespace-nowrap',
                     className,
                   )}
                 >
