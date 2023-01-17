@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { ChangeEvent, Fragment } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Listbox, Transition } from '@headlessui/react';
@@ -30,7 +30,7 @@ type Props = {
   ariaLabel?: string;
   strategy?: Strategy;
   placement?: Placement;
-  onChange?: any;
+  onChange?: (value: Option) => void;
   disabled?: boolean;
 };
 
@@ -47,7 +47,7 @@ export default function Select({
   ariaLabel = '',
   strategy: _strategy = 'absolute',
   placement: _placement = 'bottom',
-  onChange = (): void => {},
+  onChange = () => {},
   disabled = false,
 }: Props) {
   const [ref, { width }] = useMeasure<HTMLDivElement>();
@@ -66,6 +66,7 @@ export default function Select({
       as="div"
       className={clsx('inline-flex', containerClassName)}
       disabled={disabled}
+      by="key"
     >
       {({ open }) => (
         <>
