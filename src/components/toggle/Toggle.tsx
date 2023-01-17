@@ -11,6 +11,8 @@ type Props = {
   disabled?: boolean;
   label?: string;
   className?: string;
+  containerClassName?: string;
+  labelClassName?: string;
   size?: Sizes;
   onChange?(checked: boolean): void;
 };
@@ -47,6 +49,8 @@ const Toggle = ({
   defaultEnabled = false,
   label = '',
   className = '',
+  containerClassName = '',
+  labelClassName = '',
   onChange,
   disabled = false,
   size = 'medium',
@@ -65,7 +69,7 @@ const Toggle = ({
   }, [checked]);
 
   return (
-    <div className="flex items-center">
+    <div className={clsx('inline-flex items-center', containerClassName)}>
       <Switch
         checked={enabled}
         onChange={handleOnchange}
@@ -74,7 +78,7 @@ const Toggle = ({
           sizeStyles[size].background,
           disabled ? 'pointer-events-none !bg-opacity-40' : '',
           className,
-          enabled ? 'bg-primary-600 dark:bg-cyan-500' : '!bg-gray-200'
+          enabled ? 'bg-primary-600 dark:bg-cyan-500' : '!bg-gray-200',
         )}
         disabled={disabled}
         id={id}
@@ -84,14 +88,14 @@ const Toggle = ({
             'pointer-events-none inline-block rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
             sizeStyles[size].circle,
             enabled ? translateXConfig[size] : 'translate-x-0',
-            disabled ? 'bg-opacity-50' : ''
+            disabled ? 'bg-opacity-50' : '',
           )}
         />
       </Switch>
       {label && (
         <label
           htmlFor={id}
-          className={clsx('ml-1.5 inline-flex whitespace-nowrap text-gray-50', labelFontConfig[size])}
+          className={clsx('ml-1.5 inline-flex whitespace-nowrap text-gray-50', labelFontConfig[size], labelClassName)}
         >
           {label}
         </label>

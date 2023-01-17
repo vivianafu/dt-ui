@@ -17,9 +17,9 @@ const Label = ({ open }: { open: boolean }) => {
 const Template: ComponentStory<typeof Tooltip> = (args) => {
   return (
     <Tooltip {...args}>
-      <button className="rounded py-1 px-2 text-gray-50 focus:border-2 focus:border-gray-400 focus:outline-none">
+      <div className="rounded py-1 px-2 text-gray-50 focus:border-2 focus:border-gray-400 focus:outline-none">
         Trigger
-      </button>
+      </div>
     </Tooltip>
   );
 };
@@ -27,22 +27,17 @@ const Template: ComponentStory<typeof Tooltip> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   label: 'label',
-  className: 'text-gray-50',
-  arrowClassName: '',
 };
 
 export const PlacementTop = Template.bind({});
 PlacementTop.args = {
   label: ({ open }) => <Label open={open} />,
-  className: 'text-gray-50',
-  arrowClassName: '',
   placement: 'top',
 };
 
 export const HideArrow = Template.bind({});
 HideArrow.args = {
   label: <div>arrow hidden label</div>,
-  className: 'text-gray-50',
   hasArrow: false,
   placement: 'bottom-start',
 };

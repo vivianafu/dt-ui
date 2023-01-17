@@ -30,9 +30,10 @@ const FLIP_SIDES: { [k in Side]: string } = {
 };
 
 type Props = {
-  children?: ReactNode & { ref?: RefObject<unknown> };
+  children?: (ReactNode & { ref?: RefObject<unknown> }) | string;
   label?: ReactNode | string | ((props: { open: boolean }) => React.ReactNode);
   className?: string;
+  containerClassName?: string;
   arrowClassName?: string;
   portalClassName?: string;
   strategy?: Strategy;
@@ -46,6 +47,7 @@ export default function Tooltip({
   children,
   label,
   className = '',
+  containerClassName = '',
   arrowClassName = '',
   portalClassName = '',
   strategy = 'fixed',
@@ -90,11 +92,14 @@ export default function Tooltip({
     useDismiss(context),
   ]);
 
-  const ref = useMergeRefs([reference, ...(children?.ref ? [children.ref] : [])]);
+  const ref = useMergeRefs([reference, ...(isValidElement(children) && children?.ref ? [children.ref] : [])]);
 
   return (
-    <>
+    <div className={containerClassName}>
       {isValidElement(children) && cloneElement(children, getReferenceProps({ ref, ...children.props }))}
+      {!isValidElement(children) && typeof children === 'string'
+        ? cloneElement(<div className=" text-gray-50">{children}</div>, getReferenceProps({ ref }))
+        : null}
       <FloatingPortal>
         <Transition appear show={show && open && !!label}>
           <div
@@ -120,8 +125,8 @@ export default function Tooltip({
               <div>
                 <div
                   className={clsx(
-                    'relative rounded bg-gray-800 py-1 px-2 text-base shadow marker:whitespace-nowrap',
-                    className
+                    'relative rounded bg-gray-800 py-1 px-2 text-base text-gray-50 shadow marker:whitespace-nowrap',
+                    className,
                   )}
                 >
                   {typeof label === 'function' ? label({ open: open }) : label}
@@ -146,6 +151,6 @@ export default function Tooltip({
           </div>
         </Transition>
       </FloatingPortal>
-    </>
+    </div>
   );
 }

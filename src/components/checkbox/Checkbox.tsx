@@ -11,6 +11,8 @@ type Props = {
   disabled?: boolean;
   defaultChecked?: boolean;
   className?: string;
+  containerClassName?: string;
+  labelClassName?: string;
   variant?: Variants;
   onChange?: ChangeEventHandler<HTMLInputElement>;
 };
@@ -23,13 +25,22 @@ const variantStyles: { [K in Variants]: string } = {
 
 const Checkbox = forwardRef(
   (
-    { disabled = false, onChange, defaultChecked, label = '', variant = 'default', className = 'first-letter:' }: Props,
-    ref
+    {
+      disabled = false,
+      onChange,
+      defaultChecked,
+      label = '',
+      variant = 'default',
+      className = '',
+      containerClassName = '',
+      labelClassName = '',
+    }: Props,
+    ref,
   ) => {
     const id = useId();
 
     return (
-      <div className={clsx(label ? 'flex items-center' : '')}>
+      <div className={clsx(label ? 'inline-flex items-center' : '', containerClassName)}>
         <input
           ref={() => ref && (ref as React.MutableRefObject<unknown>).current}
           type="checkbox"
@@ -37,20 +48,20 @@ const Checkbox = forwardRef(
           className={clsx(
             variant ? variantStyles[variant] : '',
             disabled ? 'pointer-events-none !border-opacity-50 text-gray-600' : '',
-            className
+            className,
           )}
           disabled={disabled}
           defaultChecked={defaultChecked}
           onChange={onChange}
         />
         {label && (
-          <label htmlFor={id} className={clsx('ml-1.5 inline-flex whitespace-nowrap text-gray-50')}>
+          <label htmlFor={id} className={clsx('ml-1.5 inline-flex whitespace-nowrap text-gray-50', labelClassName)}>
             {label}
           </label>
         )}
       </div>
     );
-  }
+  },
 );
 
 export default Checkbox;

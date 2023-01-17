@@ -39,6 +39,8 @@ type Props = {
   onBlur?: FocusEventHandler<HTMLInputElement>;
   placeholder?: string;
   className?: string;
+  containerClassName?: string;
+  labelClassName?: string;
   disabled?: boolean;
   readOnly?: boolean;
   autoComplete?: string;
@@ -57,6 +59,8 @@ const Input = forwardRef(
       placeholder = '',
       defaultValue = '',
       className = '',
+      containerClassName = '',
+      labelClassName = '',
       disabled = false,
       required = false,
       variant = 'default',
@@ -65,7 +69,7 @@ const Input = forwardRef(
       readOnly = false,
       ...props
     }: Props,
-    ref
+    ref,
   ) => {
     const [isOnComposition, setIsOnComposition] = useState<boolean>(false);
     const id = useId();
@@ -84,7 +88,7 @@ const Input = forwardRef(
     };
 
     return (
-      <>
+      <div className={clsx('inline-flex items-center', containerClassName)}>
         {label && (
           <label
             htmlFor={id}
@@ -92,7 +96,8 @@ const Input = forwardRef(
               'mr-1 inline-flex whitespace-nowrap text-gray-50',
               inputSize === 'large' ? 'text-xl' : '',
               inputSize === 'small' ? 'text-sm' : '',
-              disabled ? 'pointer-events-none' : ''
+              disabled ? 'pointer-events-none' : '',
+              labelClassName,
             )}
           >
             {label} {splitter}
@@ -113,7 +118,7 @@ const Input = forwardRef(
             variant ? variantStyles?.[variant] : '',
             inputSize ? sizeStyles?.[inputSize] : '',
             disabled ? 'pointer-events-none !bg-opacity-50 text-gray-600' : '',
-            className
+            className,
           )}
           required={required}
           autoComplete={autoComplete}
@@ -121,9 +126,9 @@ const Input = forwardRef(
           {...(isNil(props.value) && { defaultValue: isNil(defaultValue) ? '' : defaultValue })}
           {...props}
         />
-      </>
+      </div>
     );
-  }
+  },
 );
 
 export default Input;
