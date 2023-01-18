@@ -19,5 +19,5 @@ const Template: ComponentStory<typeof Datepicker> = ({ onChange, selected, ...ar
 export const Default = Template.bind({});
 Default.args = {
   label: 'Datepicker',
-  selected: new Date('2023-04-05'),
+  selected: null,
 };

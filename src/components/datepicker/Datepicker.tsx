@@ -1,29 +1,24 @@
-import { Fragment, useId, useState, useLayoutEffect } from 'react';
+import { Fragment, useId, useState } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Popover, Transition } from '@headlessui/react';
 import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { isEmpty } from 'lodash';
 import { useMeasure } from 'react-use';
 
 import Ellipsis from '../ellipsis/Ellipsis';
 
-import { getLastMonth, getNextMonth, getDisplayDatesInMonth, getDefaultView, getSplitDateObject } from './helpers';
+import {
+  getLastMonth,
+  getNextMonth,
+  getDisplayDatesInMonth,
+  getDefaultView,
+  getSplitDateObject,
+  isToday,
+} from './helpers';
 
+import type { View, DateOption } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
-
-type View = {
-  year: string;
-  month: string;
-  dates: Array<DateOption>;
-};
-
-type DateOption = {
-  key: { year: string; month: string; date: string; day: string };
-  value: string;
-  disabled?: boolean;
-};
 
 type Props = {
   className?: string;
@@ -31,7 +26,7 @@ type Props = {
   buttonClassName?: string;
   optionClassName?: string;
   label?: string;
-  selected?: Date;
+  selected?: Date | null | undefined;
   placeholder?: string;
   splitter?: string;
   ariaLabel?: string;
@@ -57,11 +52,12 @@ export default function Datepicker({
   onChange = () => {},
   disabled = false,
 }: Props) {
+  const emptyDate = { year: '', month: '', date: '', day: '' };
   const id = useId();
   const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const [view, setView] = useState<View>(() => getDefaultView(selected ?? ''));
+  const [view, setView] = useState<View>(() => getDefaultView(selected ? selected : ''));
   const [selectedDate, setSelectedDate] = useState<DateOption['key'] | Record<string, never>>(
-    getSplitDateObject(selected),
+    selected ? getSplitDateObject(selected) : emptyDate,
   );
 
   const { x, y, reference, floating, strategy, placement } = useFloating({
@@ -70,6 +66,8 @@ export default function Datepicker({
     middleware: [...(_placement ? [] : [autoPlacement({ padding: 8, allowedPlacements: ['top', 'bottom'] })])],
     whileElementsMounted: autoUpdate,
   });
+
+  const isEmptyDate = !selected && Object.values(selectedDate).includes('');
 
   const isSelected = (date: DateOption['key']) =>
     date.year === selectedDate.year && date.month === selectedDate.month && date.date === selectedDate.date;
@@ -94,7 +92,7 @@ export default function Datepicker({
   };
 
   const getDisplayText = (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
-    if (isEmpty(selectedDate)) return placeholder;
+    if (isEmptyDate) return placeholder;
     return selectedDate.year + '/' + selectedDate.month + '/' + selectedDate.date;
   };
 
@@ -121,7 +119,7 @@ export default function Datepicker({
                 buttonClassName,
               )}
             >
-              <span className={clsx('block truncate', isEmpty(selectedDate) ? 'text-gray-700' : '')}>
+              <span className={clsx('block truncate', isEmptyDate ? 'text-gray-700' : '')}>
                 {getDisplayText(selectedDate, placeholder)}
               </span>
               <span
@@ -190,22 +188,20 @@ export default function Datepicker({
                           option.disabled ? 'pointer-events-none' : '',
                         )}
                       >
-                        <>
-                          <Ellipsis
-                            label={option.value}
-                            className={clsx(
-                              'relative z-10 cursor-pointer rounded-md p-1 text-gray-300',
-                              option.value && isSelected(option.key)
-                                ? 'bg-primary-500 font-semibold text-gray-100 dark:bg-cyan-500'
-                                : 'font-normal',
-                              option.value && option.disabled ? 'bg-primary-500/30 text-gray-700' : '',
-                            )}
-                            onClick={() => {
-                              handleSelectDate(option);
-                              close();
-                            }}
-                          ></Ellipsis>
-                        </>
+                        <Ellipsis
+                          label={option.value}
+                          className={clsx(
+                            'relative z-10 cursor-pointer rounded-md p-1 font-normal text-gray-300',
+                            isSelected(option.key) ? 'bg-primary-500 font-semibold text-gray-100 dark:bg-cyan-500' : '',
+                            isToday(option.key) ? ' !font-semibold text-primary-400 dark:text-cyan-500' : '',
+                            option.disabled ? 'bg-primary-500/30 text-gray-700' : '',
+                            option.value === '' ? 'hidden bg-transparent' : '',
+                          )}
+                          onClick={() => {
+                            handleSelectDate(option);
+                            close();
+                          }}
+                        />
                       </div>
                     ))}
                   </div>

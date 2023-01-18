@@ -1,3 +1,5 @@
+import type { DateOption } from './types';
+
 const convertMonthToString = (number: number) => number.toString().padStart(2, '0');
 
 export const getLastMonth = ({ year, month }: { year: string; month: string }) => {
@@ -61,4 +63,12 @@ export const getSplitDateObject = (date: Date) => {
     date: date.getDate().toString().padStart(2, '0'),
     day: date.getDay().toString(),
   };
+};
+
+export const isToday = (date: DateOption['key']) => {
+  const splitTodayObject = getSplitDateObject(new Date());
+
+  return (
+    date.year === splitTodayObject.year && date.month === splitTodayObject.month && date.date === splitTodayObject.date
+  );
 };
