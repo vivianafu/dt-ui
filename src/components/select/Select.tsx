@@ -1,4 +1,4 @@
-import { ChangeEvent, Fragment } from 'react';
+import { Fragment } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Listbox, Transition } from '@headlessui/react';

@@ -20,7 +20,7 @@ import { Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
 import type { Strategy, Placement, Side } from '@floating-ui/react';
-import type { ReactNode, RefObject } from 'react';
+import type { ReactNode, RefObject, MouseEventHandler } from 'react';
 
 const FLIP_SIDES: { [k in Side]: string } = {
   left: 'right',
@@ -41,6 +41,7 @@ type Props = {
   show?: boolean;
   interactive?: boolean;
   hasArrow?: boolean;
+  onClick?: MouseEventHandler;
 };
 
 export default function Tooltip({
@@ -55,6 +56,7 @@ export default function Tooltip({
   show = true,
   interactive = false,
   hasArrow = true,
+  onClick = (): void => {},
 }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const arrowRef = useRef<HTMLDivElement>(null);
@@ -95,7 +97,7 @@ export default function Tooltip({
   const ref = useMergeRefs([reference, ...(isValidElement(children) && children?.ref ? [children.ref] : [])]);
 
   return (
-    <div className={containerClassName}>
+    <div className={containerClassName} onClick={onClick}>
       {isValidElement(children) && cloneElement(children, getReferenceProps({ ref, ...children.props }))}
       {!isValidElement(children) && typeof children === 'string'
         ? cloneElement(<div className=" text-gray-50">{children}</div>, getReferenceProps({ ref }))
