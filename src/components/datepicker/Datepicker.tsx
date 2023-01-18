@@ -67,7 +67,7 @@ export default function Datepicker({
     whileElementsMounted: autoUpdate,
   });
 
-  const isEmptyDate = !selected && Object.values(selectedDate).includes('');
+  const isEmptySelected = !selected && Object.values(selectedDate).every((item) => item === '');
 
   const isSelected = (date: DateOption['key']) =>
     date.year === selectedDate.year && date.month === selectedDate.month && date.date === selectedDate.date;
@@ -92,7 +92,7 @@ export default function Datepicker({
   };
 
   const getDisplayText = (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
-    if (isEmptyDate) return placeholder;
+    if (isEmptySelected) return placeholder;
     return selectedDate.year + '/' + selectedDate.month + '/' + selectedDate.date;
   };
 
@@ -119,7 +119,7 @@ export default function Datepicker({
                 buttonClassName,
               )}
             >
-              <span className={clsx('block truncate', isEmptyDate ? 'text-gray-700' : '')}>
+              <span className={clsx('block truncate', isEmptySelected ? 'text-gray-700' : '')}>
                 {getDisplayText(selectedDate, placeholder)}
               </span>
               <span
@@ -143,7 +143,9 @@ export default function Datepicker({
             >
               <Transition
                 show={open}
-                afterLeave={() => setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`))}
+                afterLeave={() =>
+                  isEmptySelected ? null : setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`))
+                }
                 as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
