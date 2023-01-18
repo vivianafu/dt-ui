@@ -1,4 +1,4 @@
-import { Fragment, useId, useState, useEffect } from 'react';
+import { Fragment, useId, useState, useLayoutEffect } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Popover, Transition } from '@headlessui/react';
@@ -9,7 +9,7 @@ import { useMeasure } from 'react-use';
 
 import Ellipsis from '../ellipsis/Ellipsis';
 
-import { getLastMonth, getNextMonth, getDisplayDatesInMonth, getDefaultDate } from './helpers';
+import { getLastMonth, getNextMonth, getDisplayDatesInMonth, getDefaultView, getSplitDateObject } from './helpers';
 
 import type { Strategy, Placement } from '@floating-ui/react';
 
@@ -31,13 +31,13 @@ type Props = {
   buttonClassName?: string;
   optionClassName?: string;
   label?: string;
-  selected?: DateOption['key'] | Record<string, never>;
+  selected?: Date;
   placeholder?: string;
   splitter?: string;
   ariaLabel?: string;
   strategy?: Strategy;
   placement?: Placement;
-  onChange?: (value: DateOption['key']) => void;
+  onChange?: (value?: Date | undefined | null) => void;
   maxDate?: Date | null;
   disabled?: boolean;
 };
@@ -48,22 +48,21 @@ export default function Datepicker({
   buttonClassName = '',
   optionClassName = '',
   label,
-  selected = {},
+  selected = new Date(),
   placeholder = 'Select',
   splitter = ':',
   ariaLabel = '',
   strategy: _strategy = 'absolute',
   placement: _placement = 'bottom',
-  onChange = (value: DateOption['key']): void => {},
-  maxDate = null,
+  onChange = () => {},
   disabled = false,
 }: Props) {
   const id = useId();
   const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const [view, setView] = useState<View>(() =>
-    getDefaultDate(isEmpty(selected) ? '' : `${selected.year}-${selected.month}-${selected.date}`),
+  const [view, setView] = useState<View>(() => getDefaultView(selected ?? ''));
+  const [selectedDate, setSelectedDate] = useState<DateOption['key'] | Record<string, never>>(
+    getSplitDateObject(selected),
   );
-  const [selectedDate, setSelectedDate] = useState<DateOption['key'] | Record<string, never>>(selected);
 
   const { x, y, reference, floating, strategy, placement } = useFloating({
     strategy: _strategy,
@@ -89,7 +88,9 @@ export default function Datepicker({
 
   const handleSelectDate = (option: DateOption) => {
     setSelectedDate(option.key);
-    onChange(option.key);
+    const { year, month, date } = option.key;
+    const result = new Date(`${year}-${month}-${date}`);
+    onChange(result);
   };
 
   const getDisplayText = (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
@@ -144,7 +145,7 @@ export default function Datepicker({
             >
               <Transition
                 show={open}
-                afterLeave={() => setView(getDefaultDate(`${selectedDate.year}-${selectedDate.month}`))}
+                afterLeave={() => setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`))}
                 as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
@@ -152,7 +153,7 @@ export default function Datepicker({
               >
                 <Popover.Panel
                   className={clsx(
-                    'absolute z-20 mt-1 w-full min-w-[20rem] overflow-auto rounded-md border border-gray-50/20 bg-primary-900 p-2 text-sm shadow-lg focus:outline-none dark:bg-gray-900',
+                    'absolute z-20 mt-1.5 w-full min-w-[20rem] overflow-auto rounded-md border border-gray-50/20 bg-primary-900 p-2 text-sm shadow-lg focus:outline-none dark:bg-gray-900',
                     placement === 'top' && 'translate-y-[calc((100%_+_0.5rem)*-1)]',
                   )}
                   static
@@ -200,8 +201,8 @@ export default function Datepicker({
                               option.value && option.disabled ? 'bg-primary-500/30 text-gray-700' : '',
                             )}
                             onClick={() => {
-                              close();
                               handleSelectDate(option);
+                              close();
                             }}
                           ></Ellipsis>
                         </>

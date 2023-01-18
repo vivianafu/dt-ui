@@ -45,11 +45,20 @@ export const getDisplayDatesInMonth = ({ year, month }: { year: string; month: s
   return [...fillLastMonth, ...dates];
 };
 
-export const getDefaultDate = (date?: string | number | Date) => {
+export const getDefaultView = (date?: string | number | Date) => {
   const defaultDate = date ? new Date(date) : new Date();
   const year = defaultDate.getFullYear().toString();
   const month = convertMonthToString(defaultDate.getMonth() + 1);
   const dates = getDisplayDatesInMonth({ year, month });
 
   return { year, month, dates };
+};
+
+export const getSplitDateObject = (date: Date) => {
+  return {
+    year: date.getFullYear().toString(),
+    month: convertMonthToString(date.getMonth() + 1),
+    date: date.getDate().toString().padStart(2, '0'),
+    day: date.getDay().toString(),
+  };
 };

@@ -11,13 +11,13 @@ export default {
 } as ComponentMeta<typeof Datepicker>;
 
 const Template: ComponentStory<typeof Datepicker> = ({ onChange, selected, ...args }) => {
-  const [_selected, setSelected] = useState(selected);
+  const [_selected, setSelected] = useState<Date | null | undefined>();
 
-  return <Datepicker {...args} selected={selected} onChange={setSelected} />;
+  return <Datepicker {...args} selected={selected} onChange={(date) => setSelected(date)} />;
 };
 
 export const Default = Template.bind({});
 Default.args = {
   label: 'Datepicker',
-  className: '',
+  selected: new Date('2023-04-05'),
 };
