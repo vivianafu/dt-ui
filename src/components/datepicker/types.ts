@@ -20,3 +20,4 @@ export type Condition = {
 
 export type DateFormatOption = ('yyyy' | 'mm' | 'dd') | 'w';
 export type DateFormat = `${DateFormatOption}${string}` | `${string}${DateFormatOption}`;
+//TODO type should be string and must includes 'yyyy','mm','dd'
