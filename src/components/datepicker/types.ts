@@ -1,3 +1,6 @@
+export type YearMonth = { year: string; month: string };
+export type SplitDateObject = { year: string; month: string; date: string; day: string };
+
 export type View = {
   year: string;
   month: string;
@@ -5,7 +8,12 @@ export type View = {
 };
 
 export type DateOption = {
-  key: { year: string; month: string; date: string; day: string };
+  key: SplitDateObject;
   value: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
+};
+
+export type Condition = {
+  maxDate?: Date | null | undefined;
+  minDate?: Date | null | undefined;
 };

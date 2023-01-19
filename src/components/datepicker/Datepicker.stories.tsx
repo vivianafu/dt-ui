@@ -20,4 +20,6 @@ export const Default = Template.bind({});
 Default.args = {
   label: 'Datepicker',
   selected: null,
+  maxDate: null,
+  minDate: null,
 };

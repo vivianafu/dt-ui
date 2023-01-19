@@ -15,10 +15,12 @@ import {
   getDefaultView,
   getSplitDateObject,
   isToday,
+  isBefore,
 } from './helpers';
 
 import type { View, DateOption } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
+import { options } from 'yargs';
 
 type Props = {
   className?: string;
@@ -34,6 +36,7 @@ type Props = {
   placement?: Placement;
   onChange?: (value?: Date | undefined | null) => void;
   maxDate?: Date | null;
+  minDate?: Date | null;
   disabled?: boolean;
 };
 
@@ -50,12 +53,14 @@ export default function Datepicker({
   strategy: _strategy = 'absolute',
   placement: _placement = 'bottom',
   onChange = () => {},
+  maxDate = null,
+  minDate = null,
   disabled = false,
 }: Props) {
   const emptyDate = { year: '', month: '', date: '', day: '' };
   const id = useId();
   const [ref, { width }] = useMeasure<HTMLDivElement>();
-  const [view, setView] = useState<View>(() => getDefaultView(selected ? selected : ''));
+  const [view, setView] = useState<View>(() => getDefaultView(selected ? selected : '', { minDate, maxDate }));
   const [selectedDate, setSelectedDate] = useState<DateOption['key'] | Record<string, never>>(
     selected ? getSplitDateObject(selected) : emptyDate,
   );
@@ -74,13 +79,13 @@ export default function Datepicker({
 
   const handleDecreaseMonth = ({ year, month }: { year: string; month: string }) => {
     const result = getLastMonth({ year, month });
-    const dates = getDisplayDatesInMonth({ ...result });
+    const dates = getDisplayDatesInMonth({ ...result }, { minDate, maxDate });
     setView({ ...result, dates: dates });
   };
 
   const handleIncreaseMonth = ({ year, month }: { year: string; month: string }) => {
     const result = getNextMonth({ year, month });
-    const dates = getDisplayDatesInMonth({ ...result });
+    const dates = getDisplayDatesInMonth({ ...result }, { minDate, maxDate });
     setView({ ...result, dates: dates });
   };
 
@@ -125,7 +130,7 @@ export default function Datepicker({
               <span
                 className={clsx(
                   'pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2',
-                  disabled ? 'opacity-40' : '',
+                  disabled ? ' opacity-40' : '',
                 )}
               >
                 <CalendarIcon className="h-4 w-4" aria-hidden="true" />
@@ -144,7 +149,9 @@ export default function Datepicker({
               <Transition
                 show={open}
                 afterLeave={() =>
-                  isEmptySelected ? null : setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`))
+                  isEmptySelected
+                    ? setView(getDefaultView(new Date(), { minDate, maxDate }))
+                    : setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`, { minDate, maxDate }))
                 }
                 as={Fragment}
                 leave="transition ease-in duration-100"
@@ -181,31 +188,38 @@ export default function Datepicker({
                     <li>六</li>
                   </ul>
                   <div className={clsx('grid grid-cols-7 gap-1', optionClassName)}>
-                    {view.dates.map((option: DateOption) => (
-                      <div
-                        aria-label={`option-${option}`}
-                        key={view.month + option.key.year + option.key.month + option.key.date}
-                        className={clsx(
-                          'relative cursor-default select-none rounded-md text-center hover:bg-primary-700 dark:hover:bg-cyan-700',
-                          option.disabled ? 'pointer-events-none' : '',
-                        )}
-                      >
-                        <Ellipsis
-                          label={option.value}
+                    {view.dates.map((option: DateOption) => {
+                      return (
+                        <div
+                          aria-label={`option-${option.key.year + option.key.month + option.key.date}`}
+                          key={view.month + option.key.year + option.key.month + option.key.date}
                           className={clsx(
-                            'relative z-10 cursor-pointer rounded-md p-1 font-normal text-gray-300',
-                            isSelected(option.key) ? 'bg-primary-500 font-semibold text-gray-100 dark:bg-cyan-500' : '',
-                            isToday(option.key) ? ' !font-semibold text-primary-400 dark:text-cyan-500' : '',
-                            option.disabled ? 'bg-primary-500/30 text-gray-700' : '',
-                            option.value === '' ? 'hidden bg-transparent' : '',
+                            'relative cursor-default select-none rounded-md text-center hover:bg-primary-700 dark:hover:bg-cyan-700',
+                            option.isDisabled ? 'pointer-events-none ' : '',
                           )}
-                          onClick={() => {
-                            handleSelectDate(option);
-                            close();
-                          }}
-                        />
-                      </div>
-                    ))}
+                        >
+                          <Ellipsis
+                            label={option.value}
+                            className={clsx(
+                              'relative z-10 cursor-pointer rounded-md p-1 font-normal text-gray-300',
+                              isSelected(option.key)
+                                ? 'bg-primary-500 font-semibold text-gray-100 dark:bg-cyan-500'
+                                : '',
+                              isToday(option.key) ? '!font-semibold text-primary-400 dark:text-cyan-500' : '',
+                              isToday(option.key) && option.isDisabled
+                                ? 'text-primary-400/50 dark:text-cyan-500/50'
+                                : '',
+                              !isToday(option.key) && option.isDisabled ? ' text-gray-700' : '',
+                              option.value === '' ? 'hidden bg-transparent' : '',
+                            )}
+                            onClick={() => {
+                              handleSelectDate(option);
+                              close();
+                            }}
+                          />
+                        </div>
+                      );
+                    })}
                   </div>
                 </Popover.Panel>
               </Transition>
