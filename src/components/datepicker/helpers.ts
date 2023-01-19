@@ -37,6 +37,13 @@ const generateFillInLastMonthDates = (
       })).reverse()
     : [];
 
+const getPreviousDay = (date = new Date()) => {
+  const previous = new Date(date.getTime());
+  previous.setDate(date.getDate() - 1);
+
+  return previous;
+};
+
 /**
  * 判斷日期是否大/小於maxDate.minDate
  * @param current
@@ -47,7 +54,10 @@ const isDateDisabled = (current: Date, condition: Condition): boolean => {
   if (condition.maxDate && condition.minDate)
     return isBefore(condition.maxDate, current) || isBefore(current, condition.minDate);
   if (condition?.maxDate) return isBefore(condition.maxDate, current);
-  if (condition.minDate) return isBefore(current, condition.minDate);
+  if (condition?.minDate) {
+    const previousDate = getPreviousDay(condition?.minDate);
+    return isBefore(current, previousDate);
+  }
   return false;
 };
 
@@ -105,4 +115,4 @@ export const isToday = (date: DateOption['key']): boolean => {
   );
 };
 
-export const isBefore = (a: Date, b: Date): boolean => a.getTime() < b.getTime();
+export const isBefore = (a: Date, b: Date): boolean => a.getTime() <= b.getTime();

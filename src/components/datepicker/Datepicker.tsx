@@ -15,12 +15,10 @@ import {
   getDefaultView,
   getSplitDateObject,
   isToday,
-  isBefore,
 } from './helpers';
 
 import type { View, DateOption } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
-import { options } from 'yargs';
 
 type Props = {
   className?: string;
@@ -38,6 +36,7 @@ type Props = {
   maxDate?: Date | null;
   minDate?: Date | null;
   disabled?: boolean;
+  dateSeparator?: string;
 };
 
 export default function Datepicker({
@@ -56,6 +55,7 @@ export default function Datepicker({
   maxDate = null,
   minDate = null,
   disabled = false,
+  dateSeparator = '/',
 }: Props) {
   const emptyDate = { year: '', month: '', date: '', day: '' };
   const id = useId();
@@ -98,7 +98,9 @@ export default function Datepicker({
 
   const getDisplayText = (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
     if (isEmptySelected) return placeholder;
-    return selectedDate.year + '/' + selectedDate.month + '/' + selectedDate.date;
+    const { year, month, date } = selectedDate;
+
+    return `${year}${dateSeparator}${month}${dateSeparator}${date}`;
   };
 
   return (

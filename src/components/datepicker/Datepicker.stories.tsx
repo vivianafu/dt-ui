@@ -20,6 +20,18 @@ export const Default = Template.bind({});
 Default.args = {
   label: 'Datepicker',
   selected: null,
-  maxDate: null,
-  minDate: null,
+};
+
+export const hasMaxDate = Template.bind({});
+hasMaxDate.args = {
+  label: 'Datepicker',
+  selected: null,
+  maxDate: new Date('2023-02-01'),
+};
+
+export const hasMinDate = Template.bind({});
+hasMinDate.args = {
+  label: 'Datepicker',
+  selected: null,
+  minDate: new Date(),
 };
