@@ -35,3 +35,9 @@ hasMinDate.args = {
   selected: null,
   minDate: new Date(),
 };
+
+export const customDateFormat = Template.bind({});
+customDateFormat.args = {
+  label: 'Datepicker',
+  dateFormat: 'mmddyyyy',
+};

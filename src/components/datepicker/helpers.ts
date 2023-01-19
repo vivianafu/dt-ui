@@ -1,3 +1,4 @@
+import { isNil } from 'lodash';
 import type { DateOption, Condition, YearMonth, SplitDateObject, View } from './types';
 
 const convertMonthToString = (number: number): string => number.toString().padStart(2, '0');
@@ -116,3 +117,42 @@ export const isToday = (date: DateOption['key']): boolean => {
 };
 
 export const isBefore = (a: Date, b: Date): boolean => a.getTime() <= b.getTime();
+
+const weekDayConfig = {
+  '0': 'Sun',
+  '1': 'Mon',
+  '2': 'Tue',
+  '3': 'Wed',
+  '4': 'Thu',
+  '5': 'Fri',
+  '6': 'Sat',
+};
+
+const dateFormatOptions = {
+  year: 'yyyy',
+  month: 'mm',
+  date: 'dd',
+  day: 'w',
+};
+
+export const convertDateFormat = (format: string, splitDate: SplitDateObject | Record<string, never>) => {
+  if (!splitDate || isNil(splitDate)) return '';
+
+  const { year, month, date } = splitDate;
+  const isFormatInvalid = !format.includes('yyyy') || !format.includes('mm') || !format.includes('dd');
+  if (isFormatInvalid) return `${year}/${month}/${date}`;
+
+  const yearReg = new RegExp(dateFormatOptions.year, 'gi');
+  const monthReg = new RegExp(dateFormatOptions.month, 'gi');
+  const datReg = new RegExp(dateFormatOptions.date, 'gi');
+  const dayReg = new RegExp(dateFormatOptions.day, 'gi');
+
+  const convertedDate = format
+    .replace(yearReg, splitDate.year)
+    .replace(monthReg, splitDate.month)
+    .replace(datReg, splitDate.date);
+
+  if (splitDate.day) return convertedDate.replace(dayReg, (weekDayConfig as any)?.[splitDate?.day]);
+
+  return convertedDate;
+};

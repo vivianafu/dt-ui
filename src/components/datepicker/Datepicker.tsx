@@ -15,9 +15,10 @@ import {
   getDefaultView,
   getSplitDateObject,
   isToday,
+  convertDateFormat,
 } from './helpers';
 
-import type { View, DateOption } from './types';
+import type { View, DateOption, DateFormat } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
 
 type Props = {
@@ -36,7 +37,7 @@ type Props = {
   maxDate?: Date | null;
   minDate?: Date | null;
   disabled?: boolean;
-  dateSeparator?: string;
+  dateFormat?: DateFormat;
 };
 
 export default function Datepicker({
@@ -55,7 +56,7 @@ export default function Datepicker({
   maxDate = null,
   minDate = null,
   disabled = false,
-  dateSeparator = '/',
+  dateFormat = 'yyyy/mm/dd',
 }: Props) {
   const emptyDate = { year: '', month: '', date: '', day: '' };
   const id = useId();
@@ -98,9 +99,7 @@ export default function Datepicker({
 
   const getDisplayText = (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
     if (isEmptySelected) return placeholder;
-    const { year, month, date } = selectedDate;
-
-    return `${year}${dateSeparator}${month}${dateSeparator}${date}`;
+    return convertDateFormat(dateFormat, selectedDate);
   };
 
   return (

@@ -17,3 +17,6 @@ export type Condition = {
   maxDate?: Date | null | undefined;
   minDate?: Date | null | undefined;
 };
+
+export type DateFormatOption = ('yyyy' | 'mm' | 'dd') | 'w';
+export type DateFormat = `${DateFormatOption}${string}` | `${string}${DateFormatOption}`;
