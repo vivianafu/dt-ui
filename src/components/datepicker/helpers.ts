@@ -45,6 +45,13 @@ const getPreviousDay = (date = new Date()) => {
   return previous;
 };
 
+const getNextDay = (date = new Date()) => {
+  const next = new Date(date.getTime());
+  next.setDate(date.getDate() + 1);
+
+  return next;
+};
+
 /**
  * 判斷日期是否大/小於maxDate.minDate
  * @param current
@@ -52,13 +59,20 @@ const getPreviousDay = (date = new Date()) => {
  * @returns
  */
 const isDateDisabled = (current: Date, condition: Condition): boolean => {
-  if (condition.maxDate && condition.minDate)
-    return isBefore(condition.maxDate, current) || isBefore(current, condition.minDate);
-  if (condition?.maxDate) return isBefore(condition.maxDate, current);
+  if (condition.maxDate && condition.minDate) {
+    const nextDate = getNextDay(condition.maxDate);
+    const previousDate = getPreviousDay(condition?.minDate);
+    return isBefore(nextDate, current) || isBefore(current, previousDate);
+  }
+  if (condition?.maxDate) {
+    const nextDate = getNextDay(condition.maxDate);
+    return isBefore(nextDate, current);
+  }
   if (condition?.minDate) {
     const previousDate = getPreviousDay(condition?.minDate);
     return isBefore(current, previousDate);
   }
+
   return false;
 };
 
