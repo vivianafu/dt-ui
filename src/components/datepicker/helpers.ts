@@ -58,7 +58,7 @@ const getNextDay = (date = new Date()) => {
  * @param condition
  * @returns
  */
-const isDateDisabled = (current: Date, condition: Condition): boolean => {
+export const isDateDisabled = (current: Date, condition: Condition): boolean => {
   if (condition.maxDate && condition.minDate) {
     const nextDate = getNextDay(condition.maxDate);
     const previousDate = getPreviousDay(condition?.minDate);
@@ -144,29 +144,61 @@ const weekDayConfig = {
 
 const dateFormatOptions = {
   year: 'yyyy',
-  month: 'mm',
+  month: 'MM',
   date: 'dd',
   day: 'w',
 };
 
-export const convertDateFormat = (format: string, splitDate: SplitDateObject | Record<string, never>) => {
+const yearReg = new RegExp(dateFormatOptions.year, 'gi');
+const monthReg = new RegExp(dateFormatOptions.month, 'gi');
+const dateReg = new RegExp(dateFormatOptions.date, 'gi');
+const dayReg = new RegExp(dateFormatOptions.day, 'gi');
+
+export const convertToDateFormat = (format: string, splitDate: SplitDateObject | Record<string, never>) => {
   if (!splitDate || isNil(splitDate)) return '';
 
   const { year, month, date } = splitDate;
-  const isFormatInvalid = !format.includes('yyyy') || !format.includes('mm') || !format.includes('dd');
-  if (isFormatInvalid) return `${year}/${month}/${date}`;
-
-  const yearReg = new RegExp(dateFormatOptions.year, 'gi');
-  const monthReg = new RegExp(dateFormatOptions.month, 'gi');
-  const datReg = new RegExp(dateFormatOptions.date, 'gi');
-  const dayReg = new RegExp(dateFormatOptions.day, 'gi');
+  const isFormatValid = format.includes('yyyy') && format.includes('MM') && format.includes('dd');
+  if (!isFormatValid) return `${year}/${month}/${date}`;
 
   const convertedDate = format
     .replace(yearReg, splitDate.year)
     .replace(monthReg, splitDate.month)
-    .replace(datReg, splitDate.date);
+    .replace(dateReg, splitDate.date);
 
   if (splitDate.day) return convertedDate.replace(dayReg, (weekDayConfig as any)?.[splitDate?.day]);
 
   return convertedDate;
+};
+
+export const convertToSplitDate = (format: string, input: string): SplitDateObject => {
+  if (!input) return { year: '', month: '', date: '', day: '' };
+
+  const isFormatValid = format.includes('yyyy') && format.includes('MM') && format.includes('dd');
+  if (!isFormatValid) return { year: '', month: '', date: '', day: '' };
+
+  const yearIndex = format.search(yearReg);
+  const monthIndex = format.search(monthReg);
+  const dateIndex = format.search(dateReg);
+
+  const date = new Date(
+    `${input.substring(yearIndex, yearIndex + 4)}-${input.substring(monthIndex, monthIndex + 2)}-${input.substring(
+      dateIndex,
+      dateIndex + 2,
+    )}`,
+  );
+
+  return getSplitDateObject(date);
+};
+
+export const isValidDateFormat = (format: string = 'yyyy/MM/dd', input: string) => {
+  const convertedRule = format
+    .replace(yearReg, `[0-9]{4}`)
+    .replace(monthReg, `(1[0-2]|0[1-9])`)
+    .replace(dateReg, `(3[01]|[12][0-9]|0[1-9])`)
+    .replace(dayReg, `([1-9]{1})`);
+
+  const rule = new RegExp(convertedRule);
+
+  return rule.test(input);
 };

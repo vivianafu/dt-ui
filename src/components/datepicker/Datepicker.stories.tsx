@@ -19,7 +19,7 @@ const Template: ComponentStory<typeof Datepicker> = ({ onChange, selected, ...ar
 export const Default = Template.bind({});
 Default.args = {
   label: 'Datepicker',
-  selected: null,
+  selected: new Date(),
 };
 
 export const hasMaxDate = Template.bind({});
@@ -39,5 +39,5 @@ hasMinDate.args = {
 export const customDateFormat = Template.bind({});
 customDateFormat.args = {
   label: 'Datepicker',
-  dateFormat: 'mmddyyyy',
+  dateFormat: 'MMddyyyy',
 };
