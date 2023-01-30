@@ -210,7 +210,10 @@ export default function Datepicker({
                               isToday(option.key) && option.isDisabled
                                 ? 'text-primary-400/50 dark:text-cyan-500/50'
                                 : '',
-                              !isToday(option.key) && option.isDisabled ? ' text-gray-700' : '',
+                              isToday(option.key) && isSelected(option.key)
+                                ? 'bg-primary-500 font-semibold !text-gray-100 dark:bg-cyan-500'
+                                : '',
+                              !isToday(option.key) && option.isDisabled ? 'text-gray-700' : '',
                               option.value === '' ? 'hidden bg-transparent' : '',
                             )}
                             onClick={() => {
