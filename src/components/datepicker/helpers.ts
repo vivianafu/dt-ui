@@ -154,7 +154,7 @@ const monthReg = new RegExp(dateFormatOptions.month, 'gi');
 const dateReg = new RegExp(dateFormatOptions.date, 'gi');
 const dayReg = new RegExp(dateFormatOptions.day, 'gi');
 
-export const convertToDateFormat = (format: string, splitDate: SplitDateObject | Record<string, never>) => {
+export const convertToDateFormat = (format: string, splitDate: SplitDateObject | Record<string, never>): string => {
   if (!splitDate || isNil(splitDate)) return '';
 
   const { year, month, date } = splitDate;
@@ -191,14 +191,29 @@ export const convertToSplitDate = (format: string, input: string): SplitDateObje
   return getSplitDateObject(date);
 };
 
-export const isValidDateFormat = (format: string = 'yyyy/MM/dd', input: string) => {
+/**
+ * 判斷是否為合法之日期
+ * @param format
+ * @param input
+ */
+export const isValidDateFormat = (format: string = 'yyyy/mm/dd', input: string) => {
   const convertedRule = format
-    .replace(yearReg, `[0-9]{4}`)
+    .replace(yearReg, `([0-9]{4})`)
     .replace(monthReg, `(1[0-2]|0[1-9])`)
     .replace(dateReg, `(3[01]|[12][0-9]|0[1-9])`)
-    .replace(dayReg, `([1-9]{1})`);
+    .replace(dayReg, `([0-6]{1})`);
 
   const rule = new RegExp(convertedRule);
 
-  return rule.test(input);
+  const yearIndex = format.search(yearReg);
+  const monthIndex = format.search(monthReg);
+  const dateIndex = format.search(dateReg);
+
+  const year = input.substring(yearIndex, yearIndex + 4);
+  const month = input.substring(monthIndex, monthIndex + 2);
+  const date = input.substring(dateIndex, dateIndex + 2);
+
+  const lastDateInMonth = new Date(Number(year), Number(month), 0).getDate();
+
+  return rule.test(input) && Number(date) <= lastDateInMonth;
 };
