@@ -1,4 +1,5 @@
 import { isNil } from 'lodash';
+
 import type { DateOption, Condition, YearMonth, SplitDateObject, View } from './types';
 
 const convertMonthToString = (number: number): string => number.toString().padStart(2, '0');
@@ -196,7 +197,7 @@ export const convertToSplitDate = (format: string, input: string): SplitDateObje
  * @param format
  * @param input
  */
-export const isValidDateFormat = (format: string = 'yyyy/mm/dd', input: string) => {
+export const isValidDateFormat = (format = 'yyyy/MM/dd', input: string) => {
   const convertedRule = format
     .replace(yearReg, `([0-9]{4})`)
     .replace(monthReg, `(1[0-2]|0[1-9])`)

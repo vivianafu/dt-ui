@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, Fragment, useId, useState } from 'react';
+import { useEffect, Fragment, useId, useState, useCallback } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Popover, Transition } from '@headlessui/react';
@@ -21,8 +21,9 @@ import {
   isDateDisabled,
 } from './helpers';
 
-import type { View, DateOption, DateFormat, SplitDateObject } from './types';
+import type { View, DateOption, DateFormat } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
+import type { ChangeEvent } from 'react';
 
 type Props = {
   className?: string;
@@ -73,10 +74,13 @@ export default function Datepicker({
 
   const isEmptySelected = !selected && Object.values(selectedDate).every((item) => item === '');
 
-  const getDisplayText = (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
-    if (isEmptySelected) return placeholder;
-    return convertToDateFormat(dateFormat, selectedDate);
-  };
+  const getDisplayText = useCallback(
+    (selectedDate: DateOption['key'] | Record<string, never>, placeholder: string) => {
+      if (isEmptySelected) return placeholder;
+      return convertToDateFormat(dateFormat, selectedDate);
+    },
+    [dateFormat, isEmptySelected],
+  );
 
   const [displayText, setDisplayText] = useState(getDisplayText(selectedDate, placeholder));
 
@@ -148,7 +152,7 @@ export default function Datepicker({
 
   useEffect(() => {
     setDisplayText(getDisplayText(selectedDate, placeholder));
-  }, [selectedDate]);
+  }, [selectedDate, getDisplayText, placeholder]);
 
   return (
     <Popover className={clsx('inline-flex max-h-9', containerClassName)}>
