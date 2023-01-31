@@ -1,4 +1,4 @@
-import { ChangeEvent, forwardRef, Fragment, useId, useState } from 'react';
+import { ChangeEvent, useLayoutEffect, Fragment, useId, useState } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Popover, Transition } from '@headlessui/react';
@@ -21,7 +21,7 @@ import {
   isDateDisabled,
 } from './helpers';
 
-import type { View, DateOption, DateFormat } from './types';
+import type { View, DateOption, DateFormat, SplitDateObject } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
 
 type Props = {
@@ -101,23 +101,24 @@ export default function Datepicker({
   };
 
   const handleSelectDate = (option: DateOption) => {
+    setSelectedDate(option.key);
     const { year, month, date } = option.key;
     const result = new Date(`${year}-${month}-${date}`);
 
-    setSelectedDate(option.key);
     setDisplayText(getDisplayText(option.key, placeholder));
-    onChange(result);
+    return onChange(result);
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDisplayText(event.target.value);
-  };
-
-  const handleInputOnBlur = (event: ChangeEvent<HTMLInputElement>) => {
-    const isValidFormat = isValidDateFormat(dateFormat, event.target.value);
+  /**
+   * 判斷當前input之文字是否符合日期格式
+   * 若符合則更新
+   * @param inputValue
+   */
+  const handleUpdateSelected = (inputValue: string) => {
+    const isValidFormat = isValidDateFormat(dateFormat, inputValue);
 
     if (isValidFormat) {
-      const keyInSplitDate = convertToSplitDate(dateFormat, event.target.value);
+      const keyInSplitDate = convertToSplitDate(dateFormat, inputValue);
       const { year, month, date } = keyInSplitDate;
       const keyInDate = new Date(`${year}-${month}-${date}`);
 
@@ -132,6 +133,18 @@ export default function Datepicker({
 
     setSelectedDate(selectedDate);
     setDisplayText(getDisplayText(selectedDate, placeholder));
+  };
+
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setDisplayText(event.target.value);
+  };
+
+  const handleInputOnBlur = (event: ChangeEvent<HTMLInputElement>) => {
+    return handleUpdateSelected(event.target.value);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') return handleUpdateSelected(displayText);
   };
 
   return (
@@ -158,8 +171,13 @@ export default function Datepicker({
                 buttonClassName,
               )}
               value={displayText}
-              onChange={handleInputChange}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                close();
+                handleInputChange(event);
+              }}
               onBlur={handleInputOnBlur}
+              onClick={() => handleUpdateSelected(displayText)}
+              onKeyDown={handleKeyDown}
             />
             <span
               className={clsx(
