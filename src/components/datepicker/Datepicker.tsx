@@ -1,6 +1,6 @@
-import { useEffect, Fragment, useId, useState, useCallback } from 'react';
+import { useEffect, Fragment, useId, useState, useCallback, useRef } from 'react';
 
-import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
+import { useFloating, autoUpdate, autoPlacement, useMergeRefs } from '@floating-ui/react';
 import { Popover, Transition } from '@headlessui/react';
 import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
@@ -64,6 +64,7 @@ export default function Datepicker({
   dateFormat = 'yyyy/MM/dd',
   autoComplete = 'off',
 }: Props) {
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const emptyDate = { year: '', month: '', date: '', day: '' };
   const id = useId();
   const [ref, { width }] = useMeasure<HTMLDivElement>();
@@ -91,6 +92,8 @@ export default function Datepicker({
     middleware: [...(_placement ? [] : [autoPlacement({ padding: 8, allowedPlacements: ['top', 'bottom'] })])],
     whileElementsMounted: autoUpdate,
   });
+
+  const mergedRef = useMergeRefs([reference, inputRef]);
 
   const isSelected = (date: DateOption['key']) =>
     date.year === selectedDate.year && date.month === selectedDate.month && date.date === selectedDate.date;
@@ -180,7 +183,7 @@ export default function Datepicker({
           <div className={clsx('relative inline-flex min-w-40', className)} ref={ref}>
             <Popover.Button
               as="input"
-              ref={reference}
+              ref={mergedRef}
               id={id}
               {...(ariaLabel && { 'aria-label': ariaLabel })}
               className={clsx(
@@ -215,11 +218,12 @@ export default function Datepicker({
             >
               <Transition
                 show={open || isEntering}
-                afterLeave={() =>
+                afterLeave={() => {
                   isEmptySelected
                     ? setView(getDefaultView(new Date(), { minDate, maxDate }))
-                    : setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`, { minDate, maxDate }))
-                }
+                    : setView(getDefaultView(`${selectedDate.year}-${selectedDate.month}`, { minDate, maxDate }));
+                  inputRef.current !== null && inputRef.current.blur();
+                }}
                 as={Fragment}
                 leave="transition ease-in duration-100"
                 leaveFrom="opacity-100"
