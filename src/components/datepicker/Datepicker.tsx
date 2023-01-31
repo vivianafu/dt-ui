@@ -71,6 +71,7 @@ export default function Datepicker({
   const [selectedDate, setSelectedDate] = useState<DateOption['key'] | Record<string, never>>(
     selected ? getSplitDateObject(selected) : emptyDate,
   );
+  const [isEntering, setIsEntering] = useState(false);
 
   const isEmptySelected = !selected && Object.values(selectedDate).every((item) => item === '');
 
@@ -113,36 +114,46 @@ export default function Datepicker({
     return onChange(result);
   };
 
+  const handleResetSelected = () => {
+    setSelectedDate(selectedDate);
+    setDisplayText(getDisplayText(selectedDate, placeholder));
+  };
+
+  const handleRenewSelected = (inputValue: string) => {
+    const keyInSplitDate = convertToSplitDate(dateFormat, inputValue);
+    const { year, month, date } = keyInSplitDate;
+    const keyInDate = new Date(`${year}-${month}-${date}`);
+
+    const isSelectable = !isDateDisabled(keyInDate, { minDate, maxDate });
+    if (isSelectable) {
+      setSelectedDate(keyInSplitDate);
+      setView(getDefaultView(`${keyInSplitDate.year}-${keyInSplitDate.month}`, { minDate, maxDate }));
+      return onChange(keyInDate);
+    }
+  };
+
   /**
    * 判斷當前input之文字是否符合日期格式
-   * 若符合則更新
+   * 若符合則更新，反之返回前一次選擇之日期
    * @param inputValue
    */
   const handleUpdateSelected = (inputValue: string) => {
     const isValidFormat = isValidDateFormat(dateFormat, inputValue);
 
-    if (isValidFormat) {
-      const keyInSplitDate = convertToSplitDate(dateFormat, inputValue);
-      const { year, month, date } = keyInSplitDate;
-      const keyInDate = new Date(`${year}-${month}-${date}`);
-
-      const isSelectable = !isDateDisabled(keyInDate, { minDate, maxDate });
-      if (isSelectable) {
-        setSelectedDate(keyInSplitDate);
-        setView(getDefaultView(`${keyInSplitDate.year}-${keyInSplitDate.month}`, { minDate, maxDate }));
-        return onChange(keyInDate);
-      }
-    }
-
-    setSelectedDate(selectedDate);
-    setDisplayText(getDisplayText(selectedDate, placeholder));
+    if (isValidFormat) return handleRenewSelected(inputValue);
+    return handleResetSelected();
   };
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDisplayText(event.target.value);
+    setIsEntering(true);
+    const isValidFormat = isValidDateFormat(dateFormat, event.target.value);
+
+    if (isValidFormat) handleRenewSelected(event.target.value);
   };
 
   const handleInputOnBlur = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsEntering(false);
     return handleUpdateSelected(event.target.value);
   };
 
@@ -180,7 +191,6 @@ export default function Datepicker({
               value={displayText}
               onChange={handleInputChange}
               onBlur={handleInputOnBlur}
-              onClick={() => handleUpdateSelected(displayText)}
               onKeyDown={handleKeyDown}
               autoComplete={autoComplete}
             />
@@ -204,7 +214,7 @@ export default function Datepicker({
               }}
             >
               <Transition
-                show={open}
+                show={open || isEntering}
                 afterLeave={() =>
                   isEmptySelected
                     ? setView(getDefaultView(new Date(), { minDate, maxDate }))
