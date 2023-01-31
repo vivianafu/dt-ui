@@ -13,6 +13,8 @@ export default {
 const Template: ComponentStory<typeof Datepicker> = ({ onChange, selected, ...args }) => {
   const [_selected, setSelected] = useState<Date | null | undefined>();
 
+  console.log('_selected', _selected);
+
   return <Datepicker {...args} selected={selected} onChange={(date) => setSelected(date)} />;
 };
 

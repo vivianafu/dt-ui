@@ -1,4 +1,4 @@
-import { ChangeEvent, useLayoutEffect, Fragment, useId, useState } from 'react';
+import { ChangeEvent, useEffect, Fragment, useId, useState } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Popover, Transition } from '@headlessui/react';
@@ -146,6 +146,10 @@ export default function Datepicker({
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') return handleUpdateSelected(displayText);
   };
+
+  useEffect(() => {
+    setDisplayText(getDisplayText(selectedDate, placeholder));
+  }, [selectedDate]);
 
   return (
     <Popover className={clsx('inline-flex max-h-9', containerClassName)}>
