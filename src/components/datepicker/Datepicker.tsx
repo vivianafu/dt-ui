@@ -41,6 +41,7 @@ type Props = {
   minDate?: Date | null;
   disabled?: boolean;
   dateFormat?: DateFormat;
+  autoComplete?: 'on' | 'off' | undefined;
 };
 
 export default function Datepicker({
@@ -60,6 +61,7 @@ export default function Datepicker({
   minDate = null,
   disabled = false,
   dateFormat = 'yyyy/MM/dd',
+  autoComplete = 'off',
 }: Props) {
   const emptyDate = { year: '', month: '', date: '', day: '' };
   const id = useId();
@@ -101,11 +103,9 @@ export default function Datepicker({
   };
 
   const handleSelectDate = (option: DateOption) => {
-    setSelectedDate(option.key);
     const { year, month, date } = option.key;
     const result = new Date(`${year}-${month}-${date}`);
-
-    setDisplayText(getDisplayText(option.key, placeholder));
+    setSelectedDate(option.key);
     return onChange(result);
   };
 
@@ -124,7 +124,6 @@ export default function Datepicker({
 
       const isSelectable = !isDateDisabled(keyInDate, { minDate, maxDate });
       if (isSelectable) {
-        setDisplayText(getDisplayText(keyInSplitDate, placeholder));
         setSelectedDate(keyInSplitDate);
         setView(getDefaultView(`${keyInSplitDate.year}-${keyInSplitDate.month}`, { minDate, maxDate }));
         return onChange(keyInDate);
@@ -175,13 +174,11 @@ export default function Datepicker({
                 buttonClassName,
               )}
               value={displayText}
-              onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                close();
-                handleInputChange(event);
-              }}
+              onChange={handleInputChange}
               onBlur={handleInputOnBlur}
               onClick={() => handleUpdateSelected(displayText)}
               onKeyDown={handleKeyDown}
+              autoComplete={autoComplete}
             />
             <span
               className={clsx(
