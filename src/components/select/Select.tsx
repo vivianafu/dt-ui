@@ -1,4 +1,4 @@
-import { ChangeEvent, Fragment } from 'react';
+import { Fragment } from 'react';
 
 import { useFloating, autoUpdate, autoPlacement } from '@floating-ui/react';
 import { Listbox, Transition } from '@headlessui/react';
@@ -9,13 +9,8 @@ import { useMeasure } from 'react-use';
 
 import Ellipsis from '../ellipsis/Ellipsis';
 
+import type { Option } from './types';
 import type { Strategy, Placement } from '@floating-ui/react';
-
-type Option = {
-  key: string;
-  value: string;
-  disabled?: boolean;
-};
 
 type Props = {
   className?: string;
