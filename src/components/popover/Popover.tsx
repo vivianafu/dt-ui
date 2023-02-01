@@ -14,14 +14,16 @@ import {
   FloatingPortal,
   FloatingFocusManager,
   useId,
+  autoPlacement,
 } from '@floating-ui/react';
 import clsx from 'clsx';
 
-import type { Placement } from '@floating-ui/react';
+import type { Placement, Strategy } from '@floating-ui/react';
 
 interface PopoverOptions {
   initialOpen?: boolean;
   placement?: Placement;
+  strategy?: Strategy;
   modal?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -29,6 +31,7 @@ interface PopoverOptions {
 
 export function usePopover({
   initialOpen = false,
+  strategy = 'fixed',
   placement = 'bottom',
   modal,
   open: controlledOpen,
@@ -42,18 +45,19 @@ export function usePopover({
   const setOpen = setControlledOpen ?? setUncontrolledOpen;
 
   const data = useFloating({
-    placement,
     open,
+    strategy,
     onOpenChange: setOpen,
     whileElementsMounted: autoUpdate,
-    middleware: [offset(8), flip(), shift({ padding: 4 })],
+    middleware: [offset(8), flip(), shift({ padding: 4 }), ...(placement ? [] : [autoPlacement()])],
+    ...{ placement: placement },
   });
 
   const context = data.context;
 
   const interactions = useInteractions([
     useClick(context, {
-      enabled: controlledOpen == null,
+      enabled: controlledOpen === null,
     }),
     useDismiss(context),
     useRole(context),
