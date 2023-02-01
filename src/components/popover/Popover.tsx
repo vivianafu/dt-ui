@@ -1,0 +1,215 @@
+import * as React from 'react';
+
+import {
+  useFloating,
+  autoUpdate,
+  offset,
+  flip,
+  shift,
+  useClick,
+  useDismiss,
+  useRole,
+  useInteractions,
+  useMergeRefs,
+  FloatingPortal,
+  FloatingFocusManager,
+  useId,
+} from '@floating-ui/react';
+import clsx from 'clsx';
+
+import type { Placement } from '@floating-ui/react';
+
+interface PopoverOptions {
+  initialOpen?: boolean;
+  placement?: Placement;
+  modal?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export function usePopover({
+  initialOpen = false,
+  placement = 'bottom',
+  modal,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen,
+}: PopoverOptions = {}) {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(initialOpen);
+  const [labelId, setLabelId] = React.useState<string | undefined>();
+  const [descriptionId, setDescriptionId] = React.useState<string | undefined>();
+
+  const open = controlledOpen ?? uncontrolledOpen;
+  const setOpen = setControlledOpen ?? setUncontrolledOpen;
+
+  const data = useFloating({
+    placement,
+    open,
+    onOpenChange: setOpen,
+    whileElementsMounted: autoUpdate,
+    middleware: [offset(8), flip(), shift({ padding: 4 })],
+  });
+
+  const context = data.context;
+
+  const interactions = useInteractions([
+    useClick(context, {
+      enabled: controlledOpen == null,
+    }),
+    useDismiss(context),
+    useRole(context),
+  ]);
+
+  return React.useMemo(
+    () => ({
+      open,
+      setOpen,
+      ...interactions,
+      ...data,
+      modal,
+      labelId,
+      descriptionId,
+      setLabelId,
+      setDescriptionId,
+    }),
+    [open, setOpen, interactions, data, modal, labelId, descriptionId],
+  );
+}
+
+type ContextType =
+  | (ReturnType<typeof usePopover> & {
+      setLabelId: React.Dispatch<React.SetStateAction<string | undefined>>;
+      setDescriptionId: React.Dispatch<React.SetStateAction<string | undefined>>;
+    })
+  | null;
+
+const PopoverContext = React.createContext<ContextType>(null);
+
+export const usePopoverContext = () => {
+  const context = React.useContext(PopoverContext);
+
+  if (context === null) {
+    throw new Error('Popover components must be wrapped in <Popover />');
+  }
+
+  return context;
+};
+
+const Popover = ({
+  children,
+  modal = false,
+  ...props
+}: {
+  children: React.ReactNode;
+} & PopoverOptions) => {
+  const popover = usePopover({ modal, ...props });
+
+  return <PopoverContext.Provider value={popover}>{children}</PopoverContext.Provider>;
+};
+
+interface PopoverTriggerProps {
+  children: React.ReactNode;
+  asChild?: boolean;
+}
+
+const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTMLElement> & PopoverTriggerProps>(
+  function PopoverTrigger({ children, asChild = false, ...props }, propRef) {
+    const context = usePopoverContext();
+    const childrenRef = (children as any).ref;
+    const ref = useMergeRefs([context.reference, propRef, childrenRef]);
+
+    if (asChild && React.isValidElement(children)) {
+      return React.cloneElement(
+        children,
+        context.getReferenceProps({
+          ref,
+          ...props,
+          ...children.props,
+          'data-state': context.open ? 'open' : 'closed',
+        }),
+      );
+    }
+
+    return (
+      <button
+        ref={ref}
+        data-state={context.open ? 'open' : 'closed'}
+        className={clsx('text-gray-50', props.className)}
+        {...context.getReferenceProps(props)}
+      >
+        {children}
+      </button>
+    );
+  },
+);
+
+const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(function PopoverContent(
+  props,
+  propRef,
+) {
+  const { context: floatingContext, ...context } = usePopoverContext();
+  const ref = useMergeRefs([context.floating, propRef]);
+
+  return (
+    <FloatingPortal>
+      {context.open && (
+        <FloatingFocusManager context={floatingContext} modal={context.modal}>
+          <div
+            className={clsx(
+              'mt-1 rounded-md border border-gray-50/20 bg-primary-900 py-1 text-sm text-gray-50 shadow-lg dark:bg-gray-900',
+              props.className,
+            )}
+            ref={ref}
+            style={{
+              position: context.strategy,
+              top: context.y ?? 0,
+              left: context.x ?? 0,
+              width: 'max-content',
+              ...props.style,
+            }}
+            aria-labelledby={context.labelId}
+            aria-describedby={context.descriptionId}
+            {...context.getFloatingProps(props)}
+          >
+            {props.children}
+          </div>
+        </FloatingFocusManager>
+      )}
+    </FloatingPortal>
+  );
+});
+
+const PopoverDescription = React.forwardRef<HTMLParagraphElement, React.HTMLProps<HTMLParagraphElement>>(
+  function PopoverDescription({ children, ...props }, ref) {
+    const { setDescriptionId } = usePopoverContext();
+    const id = useId();
+
+    React.useLayoutEffect(() => {
+      setDescriptionId(id);
+      return () => setDescriptionId(undefined);
+    }, [id, setDescriptionId]);
+
+    return (
+      <div {...props} ref={ref} id={id} className="py-2 px-3 text-gray-50">
+        {children}
+      </div>
+    );
+  },
+);
+
+const PopoverClose = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
+  ({ children, ...props }, ref) => {
+    const { setOpen } = usePopoverContext();
+    return (
+      <button type="button" {...props} ref={ref} onClick={() => setOpen(false)}>
+        {children}
+      </button>
+    );
+  },
+);
+
+Popover.trigger = PopoverTrigger;
+Popover.content = PopoverContent;
+Popover.description = PopoverDescription;
+Popover.close = PopoverClose;
+
+export default Popover;
