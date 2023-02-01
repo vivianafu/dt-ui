@@ -161,7 +161,10 @@ export default function Datepicker({
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') return handleUpdateSelected(displayText);
+    if (event.key === 'Enter') {
+      handleUpdateSelected(displayText);
+      inputRef.current !== null && inputRef.current.blur();
+    }
   };
 
   useEffect(() => {
