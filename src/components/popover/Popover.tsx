@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react';
 
 import {
   useFloating,
@@ -14,7 +13,6 @@ import {
   useMergeRefs,
   FloatingPortal,
   FloatingFocusManager,
-  useId,
   autoPlacement,
 } from '@floating-ui/react';
 import clsx from 'clsx';
