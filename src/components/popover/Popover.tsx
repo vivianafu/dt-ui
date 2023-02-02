@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 
 import {
   useFloating,
@@ -17,6 +18,7 @@ import {
   autoPlacement,
 } from '@floating-ui/react';
 import clsx from 'clsx';
+import { isNil } from 'lodash';
 
 import type { Placement, Strategy } from '@floating-ui/react';
 
@@ -57,7 +59,7 @@ export function usePopover({
 
   const interactions = useInteractions([
     useClick(context, {
-      enabled: controlledOpen === null,
+      enabled: isNil(controlledOpen),
     }),
     useDismiss(context),
     useRole(context),
@@ -98,18 +100,6 @@ export const usePopoverContext = () => {
   return context;
 };
 
-const Popover = ({
-  children,
-  modal = false,
-  ...props
-}: {
-  children: React.ReactNode;
-} & PopoverOptions) => {
-  const popover = usePopover({ modal, ...props });
-
-  return <PopoverContext.Provider value={popover}>{children}</PopoverContext.Provider>;
-};
-
 interface PopoverTriggerProps {
   children: React.ReactNode;
   asChild?: boolean;
@@ -118,6 +108,7 @@ interface PopoverTriggerProps {
 const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTMLElement> & PopoverTriggerProps>(
   function PopoverTrigger({ children, asChild = false, ...props }, propRef) {
     const context = usePopoverContext();
+
     const childrenRef = (children as any).ref;
     const ref = useMergeRefs([context.reference, propRef, childrenRef]);
 
@@ -159,7 +150,7 @@ const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivE
         <FloatingFocusManager context={floatingContext} modal={context.modal}>
           <div
             className={clsx(
-              'mt-1 rounded-md border border-gray-50/20 bg-primary-900 py-1 text-sm text-gray-50 shadow-lg dark:bg-gray-900',
+              'mt-1 rounded-md border border-gray-50/20 bg-primary-900 py-1 px-2 text-sm text-gray-50 shadow-lg dark:bg-gray-900',
               props.className,
             )}
             ref={ref}
@@ -182,38 +173,23 @@ const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivE
   );
 });
 
-const PopoverDescription = React.forwardRef<HTMLParagraphElement, React.HTMLProps<HTMLParagraphElement>>(
-  function PopoverDescription({ children, ...props }, ref) {
-    const { setDescriptionId } = usePopoverContext();
-    const id = useId();
+const Popover = ({
+  children,
+  render,
+  modal = false,
+  ...props
+}: {
+  children: React.ReactNode | ((props: PopoverOptions) => React.ReactNode);
+  render: React.ReactNode | ((props: PopoverOptions) => React.ReactNode);
+} & PopoverOptions) => {
+  const popover = usePopover({ modal, ...props });
 
-    React.useLayoutEffect(() => {
-      setDescriptionId(id);
-      return () => setDescriptionId(undefined);
-    }, [id, setDescriptionId]);
-
-    return (
-      <div {...props} ref={ref} id={id} className="py-2 px-3 text-gray-50">
-        {children}
-      </div>
-    );
-  },
-);
-
-const PopoverClose = React.forwardRef<HTMLButtonElement, React.ButtonHTMLAttributes<HTMLButtonElement>>(
-  ({ children, ...props }, ref) => {
-    const { setOpen } = usePopoverContext();
-    return (
-      <button type="button" {...props} ref={ref} onClick={() => setOpen(false)}>
-        {children}
-      </button>
-    );
-  },
-);
-
-Popover.trigger = PopoverTrigger;
-Popover.content = PopoverContent;
-Popover.description = PopoverDescription;
-Popover.close = PopoverClose;
+  return (
+    <PopoverContext.Provider value={popover}>
+      <PopoverTrigger>{typeof children === 'function' ? children(popover) : children}</PopoverTrigger>
+      <PopoverContent>{typeof render === 'function' ? render(popover) : render}</PopoverContent>
+    </PopoverContext.Provider>
+  );
+};
 
 export default Popover;
