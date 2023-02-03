@@ -101,10 +101,11 @@ export const usePopoverContext = () => {
 interface PopoverTriggerProps {
   children: React.ReactNode;
   asChild?: boolean;
+  className?: string;
 }
 
 const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTMLElement> & PopoverTriggerProps>(
-  function PopoverTrigger({ children, asChild = false, ...props }, propRef) {
+  ({ children, asChild = false, className, ...props }, propRef) => {
     const context = usePopoverContext();
 
     const childrenRef = (children as any).ref;
@@ -126,7 +127,7 @@ const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTMLElement
       <button
         ref={ref}
         data-state={context.open ? 'open' : 'closed'}
-        className={clsx('text-gray-50', props.className)}
+        className={clsx('text-gray-50', className)}
         {...context.getReferenceProps(props)}
       >
         {children}
@@ -135,57 +136,65 @@ const PopoverTrigger = React.forwardRef<HTMLElement, React.HTMLProps<HTMLElement
   },
 );
 
-const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(function PopoverContent(
-  props,
-  propRef,
-) {
-  const { context: floatingContext, ...context } = usePopoverContext();
-  const ref = useMergeRefs([context.floating, propRef]);
+const PopoverContent = React.forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
+  ({ children, className, style, ...props }, propRef) => {
+    const { context: floatingContext, ...context } = usePopoverContext();
+    const ref = useMergeRefs([context.floating, propRef]);
 
-  return (
-    <FloatingPortal>
-      {context.open && (
-        <FloatingFocusManager context={floatingContext} modal={context.modal}>
-          <div
-            className={clsx(
-              'mt-1 rounded-md border border-gray-50/20 bg-primary-900 py-1 px-2 text-sm text-gray-50 shadow-lg dark:bg-gray-900',
-              props.className,
-            )}
-            ref={ref}
-            style={{
-              position: context.strategy,
-              top: context.y ?? 0,
-              left: context.x ?? 0,
-              width: 'max-content',
-              ...props.style,
-            }}
-            aria-labelledby={context.labelId}
-            aria-describedby={context.descriptionId}
-            {...context.getFloatingProps(props)}
-          >
-            {props.children}
-          </div>
-        </FloatingFocusManager>
-      )}
-    </FloatingPortal>
-  );
-});
+    return (
+      <FloatingPortal>
+        {context.open && (
+          <FloatingFocusManager context={floatingContext} order={['reference', 'content']}>
+            <div
+              className={clsx(
+                '-mt-0.5 rounded border border-gray-50/20 bg-primary-900 py-1 px-2 text-sm text-gray-50 shadow-lg dark:bg-gray-900',
+                className,
+                context.placement.includes('top') && 'translate-y-[0.25rem]',
+              )}
+              ref={ref}
+              style={{
+                position: context.strategy,
+                top: context.y ?? 0,
+                left: context.x ?? 0,
+                width: 'max-content',
+                ...style,
+              }}
+              aria-labelledby={context.labelId}
+              aria-describedby={context.descriptionId}
+              {...context.getFloatingProps(props)}
+            >
+              {children}
+            </div>
+          </FloatingFocusManager>
+        )}
+      </FloatingPortal>
+    );
+  },
+);
 
 const Popover = ({
   children,
   render,
   modal = false,
+  triggerClassName,
+  contentClassName,
   ...props
 }: {
   children: React.ReactNode | ((props: PopoverOptions) => React.ReactNode);
   render: React.ReactNode | ((props: PopoverOptions) => React.ReactNode);
+  triggerClassName?: string;
+  contentClassName?: string;
 } & PopoverOptions) => {
   const popover = usePopover({ modal, ...props });
 
   return (
     <PopoverContext.Provider value={popover}>
-      <PopoverTrigger>{typeof children === 'function' ? children(popover) : children}</PopoverTrigger>
-      <PopoverContent>{typeof render === 'function' ? render(popover) : render}</PopoverContent>
+      <PopoverTrigger className={triggerClassName}>
+        {typeof children === 'function' ? children(popover) : children}
+      </PopoverTrigger>
+      <PopoverContent className={contentClassName}>
+        {typeof render === 'function' ? render(popover) : render}
+      </PopoverContent>
     </PopoverContext.Provider>
   );
 };
