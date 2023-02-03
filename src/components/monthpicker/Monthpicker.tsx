@@ -1,4 +1,4 @@
-import { useCallback, useId, useState, useEffect } from 'react';
+import { useCallback, useId, useState, useEffect, useRef } from 'react';
 
 import { ChevronLeftIcon, ChevronRightIcon, CalendarIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
@@ -17,7 +17,7 @@ import {
 } from './helpers';
 
 import type { Condition, MonthOption, View } from './types';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
 
 type Props = {
   label?: string;
@@ -71,23 +71,25 @@ const MonthModal = ({ handleSelectDate, selectedMonth, view, setView, condition 
       </div>
       <div className="mb-2 grid grid-cols-4 gap-1">
         {view.months.map((option) => (
-          <div
+          <button
             onClick={() => handleSelectDate(option)}
             key={option.key.year + option.key.month}
             className={clsx(
-              'relative min-w-12 cursor-default select-none rounded px-2 py-1 text-center hover:bg-primary-700 dark:hover:bg-cyan-700',
-              isSelected(option.key) ? 'bg-primary-500 font-semibold text-gray-100 dark:bg-cyan-500' : '',
+              'relative min-w-12 cursor-pointer select-none rounded px-2 py-1 text-center hover:bg-primary-700 dark:hover:bg-cyan-700',
+              isSelected(option.key)
+                ? 'bg-primary-500 font-semibold text-gray-100 hover:bg-primary-500 dark:bg-cyan-500 hover:dark:bg-cyan-500'
+                : '',
               isCurrentMonth(option.key) ? '!font-semibold text-primary-400 dark:text-cyan-500' : '',
               isCurrentMonth(option.key) && option.isDisabled ? 'text-primary-400/50 dark:text-cyan-500/50' : '',
               isCurrentMonth(option.key) && isSelected(option.key)
-                ? 'bg-primary-500 font-semibold !text-gray-100 dark:bg-cyan-500'
+                ? '!bg-primary-500 font-semibold !text-gray-100 hover:bg-primary-500 dark:!bg-cyan-500 hover:dark:bg-cyan-500'
                 : '',
               !isCurrentMonth(option.key) && option.isDisabled ? 'text-gray-700' : '',
               option.value === '' ? 'hidden bg-transparent' : '',
             )}
           >
             {option.value}
-          </div>
+          </button>
         ))}
       </div>
     </>
@@ -106,6 +108,7 @@ export default function Monthpicker({
   onChange = () => {},
   disabled = false,
 }: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const id = useId();
   const emptyDate = { year: '', month: '' };
   const [selectedMonth, setSelectedMonth] = useState<MonthOption['key'] | Record<string, never>>(
@@ -133,6 +136,11 @@ export default function Monthpicker({
     return onChange(result);
   };
 
+  const handleResetSelected = () => {
+    setSelectedMonth(selectedMonth);
+    setDisplayText(getDisplayText(selectedMonth, placeholder));
+  };
+
   const handleRenewSelected = (inputValue: string) => {
     const keyInSplitDate = convertToSplitDate(dateFormat, inputValue);
     const { year, month } = keyInSplitDate;
@@ -148,12 +156,39 @@ export default function Monthpicker({
     }
   };
 
+  /**
+   * 判斷當前input之文字是否符合日期格式
+   * 若符合則更新，反之返回前一次選擇之日期
+   * @param inputValue
+   */
+  const handleUpdateSelected = (inputValue: string) => {
+    const isValidFormat = isValidDateFormat(dateFormat, inputValue);
+
+    if (isValidFormat) return handleRenewSelected(inputValue);
+    return handleResetSelected();
+  };
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setDisplayText(event.target.value);
     setIsEntering(true);
     const isValidFormat = isValidDateFormat(dateFormat, event.target.value);
 
     if (isValidFormat) handleRenewSelected(event.target.value);
+  };
+
+  const handleInputOnBlur = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsEntering(false);
+
+    return handleUpdateSelected(event.target.value);
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleUpdateSelected(displayText);
+      inputRef.current !== null && inputRef.current.blur();
+      setIsOpen(false);
+      setIsEntering(false);
+    }
   };
 
   useEffect(() => {
@@ -174,6 +209,8 @@ export default function Monthpicker({
         placement="bottom-start"
         triggerClassName="relative"
         contentClassName="rounded-md"
+        open={isOpen || isEntering}
+        onOpenChange={setIsOpen}
         render={
           <MonthModal
             condition={{ maxDate, minDate }}
@@ -185,15 +222,23 @@ export default function Monthpicker({
         }
       >
         <input
+          id={id}
+          ref={inputRef}
           className={clsx(
             'relative min-h-9 w-full cursor-pointer rounded-md border border-gray-50/20 bg-primary-900 pl-3 pr-10 text-left text-gray-50 shadow-sm focus:border-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-700 dark:bg-transparent dark:focus:border-transparent dark:focus:ring-cyan-500',
             disabled ? 'pointer-events-none cursor-default !bg-opacity-50 text-gray-600' : '',
+            isOpen
+              ? 'border-primary-700 outline-none ring-2 ring-primary-700 dark:border-transparent dark:ring-cyan-500'
+              : '',
           )}
           value={displayText}
+          onFocus={(e) => {
+            console.log('onFocus'); // trigger component and input focus conflicts?
+            setIsOpen(true);
+          }}
           onChange={handleInputChange}
-          //   onBlur={handleInputOnBlur}
-          //   onKeyDown={handleKeyDown}
-          id={id}
+          onBlur={handleInputOnBlur}
+          onKeyDown={handleKeyDown}
           autoComplete={autoComplete}
         />
         <span
